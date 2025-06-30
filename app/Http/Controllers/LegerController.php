@@ -119,24 +119,24 @@ class LegerController extends Controller
     public function getRuas(Request $request)
     {
         $ruas = DB::table('jalan_tol')
-        ->selectRaw('id, nama, tahun')
-        ->get();
+            ->selectRaw('id, nama, tahun')
+            ->get();
         return json_encode($ruas);
     }
 
     public function getSegmen(Request $request)
     {
-        $segmen =DB::table('spatial_segmen_leger_polygon')
-        ->where('spatial_segmen_leger_polygon.jalan_tol_id', $request->jalan_tol_id)
-        ->where('spatial_segmen_leger_polygon.id_leger', 'like', 'M%') // Only select id_leger that starts with 'M.'
-        ->selectRaw('spatial_segmen_leger_polygon.id_leger, spatial_segmen_leger_polygon.km')
-        ->orderBy('spatial_segmen_leger_polygon.id_leger', 'asc') // Sort in ascending order
-        ->get();
+        $segmen = DB::table('spatial_segmen_leger_polygon')
+            ->where('spatial_segmen_leger_polygon.jalan_tol_id', $request->jalan_tol_id)
+            ->where('spatial_segmen_leger_polygon.id_leger', 'like', 'M%') // Only select id_leger that starts with 'M.'
+            ->selectRaw('spatial_segmen_leger_polygon.id_leger, spatial_segmen_leger_polygon.km')
+            ->orderBy('spatial_segmen_leger_polygon.id_leger', 'asc') // Sort in ascending order
+            ->get();
 
         $ruas = DB::table('jalan_tol')
-        ->where('id', $request->jalan_tol_id)
-        ->selectRaw('id, nama, tahun')
-        ->first();
+            ->where('id', $request->jalan_tol_id)
+            ->selectRaw('id, nama, tahun')
+            ->first();
 
         return json_encode([
             'segmen' => $segmen,
@@ -149,7 +149,7 @@ class LegerController extends Controller
     {
 
         //RAMBU LALU LINTAS KIRI
-        $rambu_lalulintas_kiri_count =DB::table('spatial_rambu_lalulintas_point')
+        $rambu_lalulintas_kiri_count = DB::table('spatial_rambu_lalulintas_point')
             ->join('spatial_segmen_leger_polygon', function ($join) {
                 $join->on(DB::raw('ST_Contains(spatial_segmen_leger_polygon.geom::geometry, spatial_rambu_lalulintas_point.geom::geometry)'), '=', DB::raw('true'));
             })
@@ -162,7 +162,7 @@ class LegerController extends Controller
             ->value('rambu_lalulintas_kiri_count');
 
         //RAMBU LALU LINTAS KANAN
-        $rambu_lalulintas_kanan_count =DB::table('spatial_rambu_lalulintas_point')
+        $rambu_lalulintas_kanan_count = DB::table('spatial_rambu_lalulintas_point')
             ->join('spatial_segmen_leger_polygon', function ($join) {
                 $join->on(DB::raw('ST_Contains(spatial_segmen_leger_polygon.geom::geometry, spatial_rambu_lalulintas_point.geom::geometry)'), '=', DB::raw('true'));
             })
@@ -175,7 +175,7 @@ class LegerController extends Controller
             ->value('rambu_lalulintas_kanan_count');
 
         //RAMBU LALU LINTAS MEDIAN
-        $rambu_lalulintas_median_count =DB::table('spatial_rambu_lalulintas_point')
+        $rambu_lalulintas_median_count = DB::table('spatial_rambu_lalulintas_point')
             ->join('spatial_segmen_leger_polygon', function ($join) {
                 $join->on(DB::raw('ST_Contains(spatial_segmen_leger_polygon.geom::geometry, spatial_rambu_lalulintas_point.geom::geometry)'), '=', DB::raw('true'));
             })
@@ -196,7 +196,7 @@ class LegerController extends Controller
 
     public function getGorongGorong(Request $request)
     {
-        $gorong =DB::table('spatial_gorong_gorong_line as gr')
+        $gorong = DB::table('spatial_gorong_gorong_line as gr')
             ->select('gr.*')
             ->join('spatial_segmen_leger_polygon as sl', DB::raw('ST_Contains(sl.geom::geometry, gr.geom::geometry)'), '=', DB::raw('true'))
             ->where('sl.id_leger', $request->leger_id)
@@ -207,7 +207,7 @@ class LegerController extends Controller
 
     public function getDataGeometrikJalan(Request $request)
     {
-        $data_geometrik_jalan =DB::table('spatial_data_geometrik_jalan_polygon')
+        $data_geometrik_jalan = DB::table('spatial_data_geometrik_jalan_polygon')
             ->select('spatial_data_geometrik_jalan_polygon.*')
             ->where('spatial_data_geometrik_jalan_polygon.id_leger', $request->leger_id)
             ->get()->first();
@@ -218,7 +218,7 @@ class LegerController extends Controller
     public function getPatokKM(Request $request)
     {
         // PATOK KM KIRI
-        $patok_km_kiri_count =DB::table('spatial_patok_km_point')
+        $patok_km_kiri_count = DB::table('spatial_patok_km_point')
             ->join('spatial_segmen_leger_polygon', function ($join) {
                 $join->on(DB::raw('ST_Contains(spatial_segmen_leger_polygon.geom::geometry, spatial_patok_km_point.geom::geometry)'), '=', DB::raw('true'));
             })
@@ -231,7 +231,7 @@ class LegerController extends Controller
             ->value('patok_km_kiri_count');
 
         // PATOK KM KANAN
-        $patok_km_kanan_count =DB::table('spatial_patok_km_point')
+        $patok_km_kanan_count = DB::table('spatial_patok_km_point')
             ->join('spatial_segmen_leger_polygon', function ($join) {
                 $join->on(DB::raw('ST_Contains(spatial_segmen_leger_polygon.geom::geometry, spatial_patok_km_point.geom::geometry)'), '=', DB::raw('true'));
             })
@@ -244,7 +244,7 @@ class LegerController extends Controller
             ->value('patok_km_kanan_count');
 
         // PATOK KM MEDIAN
-        $patok_km_median_count =DB::table('spatial_patok_km_point')
+        $patok_km_median_count = DB::table('spatial_patok_km_point')
             ->join('spatial_segmen_leger_polygon', function ($join) {
                 $join->on(DB::raw('ST_Contains(spatial_segmen_leger_polygon.geom::geometry, spatial_patok_km_point.geom::geometry)'), '=', DB::raw('true'));
             })
@@ -266,7 +266,7 @@ class LegerController extends Controller
     public function getPatokHM(Request $request)
     {
         // PATOK HM KIRI
-        $patok_hm_kiri_count =DB::table('spatial_patok_hm_point')
+        $patok_hm_kiri_count = DB::table('spatial_patok_hm_point')
             ->join('spatial_segmen_leger_polygon', function ($join) {
                 $join->on(DB::raw('ST_Contains(spatial_segmen_leger_polygon.geom::geometry, spatial_patok_hm_point.geom::geometry)'), '=', DB::raw('true'));
             })
@@ -279,7 +279,7 @@ class LegerController extends Controller
             ->value('patok_hm_kiri_count');
 
         // PATOK HM KANAN
-        $patok_hm_kanan_count =DB::table('spatial_patok_hm_point')
+        $patok_hm_kanan_count = DB::table('spatial_patok_hm_point')
             ->join('spatial_segmen_leger_polygon', function ($join) {
                 $join->on(DB::raw('ST_Contains(spatial_segmen_leger_polygon.geom::geometry, spatial_patok_hm_point.geom::geometry)'), '=', DB::raw('true'));
             })
@@ -292,7 +292,7 @@ class LegerController extends Controller
             ->value('patok_hm_kanan_count');
 
         // PATOK HM MEDIAN
-        $patok_hm_median_count =DB::table('spatial_patok_hm_point')
+        $patok_hm_median_count = DB::table('spatial_patok_hm_point')
             ->join('spatial_segmen_leger_polygon', function ($join) {
                 $join->on(DB::raw('ST_Contains(spatial_segmen_leger_polygon.geom::geometry, spatial_patok_hm_point.geom::geometry)'), '=', DB::raw('true'));
             })
@@ -314,7 +314,7 @@ class LegerController extends Controller
     public function getPatokLJ(Request $request)
     {
         // PATOK LJ KIRI
-        $patok_lj_kiri_count =DB::table('spatial_patok_lj_point')
+        $patok_lj_kiri_count = DB::table('spatial_patok_lj_point')
             ->join('spatial_segmen_leger_polygon', function ($join) {
                 $join->on(DB::raw('ST_Contains(spatial_segmen_leger_polygon.geom::geometry, spatial_patok_lj_point.geom::geometry)'), '=', DB::raw('true'));
             })
@@ -327,7 +327,7 @@ class LegerController extends Controller
             ->value('patok_lj_kiri_count');
 
         // PATOK LJ KANAN
-        $patok_lj_kanan_count =DB::table('spatial_patok_lj_point')
+        $patok_lj_kanan_count = DB::table('spatial_patok_lj_point')
             ->join('spatial_segmen_leger_polygon', function ($join) {
                 $join->on(DB::raw('ST_Contains(spatial_segmen_leger_polygon.geom::geometry, spatial_patok_lj_point.geom::geometry)'), '=', DB::raw('true'));
             })
@@ -340,7 +340,7 @@ class LegerController extends Controller
             ->value('patok_lj_kanan_count');
 
         // PATOK LJ MEDIAN
-        $patok_lj_median_count =DB::table('spatial_patok_lj_point')
+        $patok_lj_median_count = DB::table('spatial_patok_lj_point')
             ->join('spatial_segmen_leger_polygon', function ($join) {
                 $join->on(DB::raw('ST_Contains(spatial_segmen_leger_polygon.geom::geometry, spatial_patok_lj_point.geom::geometry)'), '=', DB::raw('true'));
             })
@@ -362,7 +362,7 @@ class LegerController extends Controller
     public function getPatokRMJ(Request $request)
     {
         // PATOK RMJ KIRI
-        $patok_rmj_kiri_count =DB::table('spatial_patok_rmj_point')
+        $patok_rmj_kiri_count = DB::table('spatial_patok_rmj_point')
             ->join('spatial_segmen_leger_polygon', function ($join) {
                 $join->on(DB::raw('ST_Contains(spatial_segmen_leger_polygon.geom::geometry, spatial_patok_rmj_point.geom::geometry)'), '=', DB::raw('true'));
             })
@@ -375,7 +375,7 @@ class LegerController extends Controller
             ->value('patok_rmj_kiri_count');
 
         // PATOK RMJ KANAN
-        $patok_rmj_kanan_count =DB::table('spatial_patok_rmj_point')
+        $patok_rmj_kanan_count = DB::table('spatial_patok_rmj_point')
             ->join('spatial_segmen_leger_polygon', function ($join) {
                 $join->on(DB::raw('ST_Contains(spatial_segmen_leger_polygon.geom::geometry, spatial_patok_rmj_point.geom::geometry)'), '=', DB::raw('true'));
             })
@@ -410,7 +410,7 @@ class LegerController extends Controller
     public function getLHR(Request $request)
     {
         // LHR GOLONGAN I KIRI
-        $lhr__kiri_sum_golongan_i =DB::table('spatial_lhr_polygon')
+        $lhr__kiri_sum_golongan_i = DB::table('spatial_lhr_polygon')
             ->selectRaw('SUM(CAST(spatial_lhr_polygon.gol_i AS NUMERIC)) as lhr__kiri_sum_golongan_i')
             ->join('spatial_segmen_perlengkapan_polygon', DB::raw('ST_Overlaps(spatial_segmen_perlengkapan_polygon.geom::geometry, spatial_lhr_polygon.geom::geometry)'), '=', DB::raw('true'))
             ->where('spatial_segmen_perlengkapan_polygon.jalur', 'JALUR KIRI')
@@ -418,7 +418,7 @@ class LegerController extends Controller
             ->value('lhr__kiri_sum_golongan_i');
 
         // LHR GOLONGAN I KANAN
-        $lhr__kanan_sum_golongan_i =DB::table('spatial_lhr_polygon')
+        $lhr__kanan_sum_golongan_i = DB::table('spatial_lhr_polygon')
             ->selectRaw('SUM(CAST(spatial_lhr_polygon.gol_i AS NUMERIC)) as lhr__kanan_sum_golongan_i')
             ->join('spatial_segmen_perlengkapan_polygon', DB::raw('ST_Overlaps(spatial_segmen_perlengkapan_polygon.geom::geometry, spatial_lhr_polygon.geom::geometry)'), '=', DB::raw('true'))
             ->where('spatial_segmen_perlengkapan_polygon.jalur', 'JALUR KANAN')
@@ -426,7 +426,7 @@ class LegerController extends Controller
             ->value('lhr__kanan_sum_golongan_i');
 
         // LHR GOLONGAN II KIRI
-        $lhr__kiri_sum_golongan_ii =DB::table('spatial_lhr_polygon')
+        $lhr__kiri_sum_golongan_ii = DB::table('spatial_lhr_polygon')
             ->selectRaw('SUM(CAST(spatial_lhr_polygon.gol_ii AS NUMERIC)) as lhr__kiri_sum_golongan_ii')
             ->join('spatial_segmen_perlengkapan_polygon', DB::raw('ST_Overlaps(spatial_segmen_perlengkapan_polygon.geom::geometry, spatial_lhr_polygon.geom::geometry)'), '=', DB::raw('true'))
             ->where('spatial_segmen_perlengkapan_polygon.jalur', 'JALUR KIRI')
@@ -434,7 +434,7 @@ class LegerController extends Controller
             ->value('lhr__kiri_sum_golongan_ii');
 
         // LHR GOLONGAN II KANAN
-        $lhr__kanan_sum_golongan_ii =DB::table('spatial_lhr_polygon')
+        $lhr__kanan_sum_golongan_ii = DB::table('spatial_lhr_polygon')
             ->selectRaw('SUM(CAST(spatial_lhr_polygon.gol_ii AS NUMERIC)) as lhr__kanan_sum_golongan_ii')
             ->join('spatial_segmen_perlengkapan_polygon', DB::raw('ST_Overlaps(spatial_segmen_perlengkapan_polygon.geom::geometry, spatial_lhr_polygon.geom::geometry)'), '=', DB::raw('true'))
             ->where('spatial_segmen_perlengkapan_polygon.jalur', 'JALUR KANAN')
@@ -442,7 +442,7 @@ class LegerController extends Controller
             ->value('lhr__kanan_sum_golongan_ii');
 
         // LHR GOLONGAN III KIRI
-        $lhr__kiri_sum_golongan_iii =DB::table('spatial_lhr_polygon')
+        $lhr__kiri_sum_golongan_iii = DB::table('spatial_lhr_polygon')
             ->selectRaw('SUM(CAST(spatial_lhr_polygon.gol_iii AS NUMERIC)) as lhr__kiri_sum_golongan_iii')
             ->join('spatial_segmen_perlengkapan_polygon', DB::raw('ST_Overlaps(spatial_segmen_perlengkapan_polygon.geom::geometry, spatial_lhr_polygon.geom::geometry)'), '=', DB::raw('true'))
             ->where('spatial_segmen_perlengkapan_polygon.jalur', 'JALUR KIRI')
@@ -450,7 +450,7 @@ class LegerController extends Controller
             ->value('lhr__kiri_sum_golongan_iii');
 
         // LHR GOLONGAN III KANAN
-        $lhr__kanan_sum_golongan_iii =DB::table('spatial_lhr_polygon')
+        $lhr__kanan_sum_golongan_iii = DB::table('spatial_lhr_polygon')
             ->selectRaw('SUM(CAST(spatial_lhr_polygon.gol_iii AS NUMERIC)) as lhr__kanan_sum_golongan_iii')
             ->join('spatial_segmen_perlengkapan_polygon', DB::raw('ST_Overlaps(spatial_segmen_perlengkapan_polygon.geom::geometry, spatial_lhr_polygon.geom::geometry)'), '=', DB::raw('true'))
             ->where('spatial_segmen_perlengkapan_polygon.jalur', 'JALUR KANAN')
@@ -458,7 +458,7 @@ class LegerController extends Controller
             ->value('lhr__kanan_sum_golongan_iii');
 
         // LHR GOLONGAN IV KIRI
-        $lhr__kiri_sum_golongan_iv =DB::table('spatial_lhr_polygon')
+        $lhr__kiri_sum_golongan_iv = DB::table('spatial_lhr_polygon')
             ->selectRaw('SUM(CAST(spatial_lhr_polygon.gol_iv AS NUMERIC)) as lhr__kiri_sum_golongan_iv')
             ->join('spatial_segmen_perlengkapan_polygon', DB::raw('ST_Overlaps(spatial_segmen_perlengkapan_polygon.geom::geometry, spatial_lhr_polygon.geom::geometry)'), '=', DB::raw('true'))
             ->where('spatial_segmen_perlengkapan_polygon.jalur', 'JALUR KIRI')
@@ -466,7 +466,7 @@ class LegerController extends Controller
             ->value('lhr__kiri_sum_golongan_iv');
 
         // LHR GOLONGAN IV KANAN
-        $lhr__kanan_sum_golongan_iv =DB::table('spatial_lhr_polygon')
+        $lhr__kanan_sum_golongan_iv = DB::table('spatial_lhr_polygon')
             ->selectRaw('SUM(CAST(spatial_lhr_polygon.gol_iv AS NUMERIC)) as lhr__kanan_sum_golongan_iv')
             ->join('spatial_segmen_perlengkapan_polygon', DB::raw('ST_Overlaps(spatial_segmen_perlengkapan_polygon.geom::geometry, spatial_lhr_polygon.geom::geometry)'), '=', DB::raw('true'))
             ->where('spatial_segmen_perlengkapan_polygon.jalur', 'JALUR KANAN')
@@ -474,7 +474,7 @@ class LegerController extends Controller
             ->value('lhr__kanan_sum_golongan_iv');
 
         // LHR GOLONGAN V KIRI
-        $lhr__kiri_sum_golongan_v =DB::table('spatial_lhr_polygon')
+        $lhr__kiri_sum_golongan_v = DB::table('spatial_lhr_polygon')
             ->selectRaw('SUM(CAST(spatial_lhr_polygon.gol_v AS NUMERIC)) as lhr__kiri_sum_golongan_v')
             ->join('spatial_segmen_perlengkapan_polygon', DB::raw('ST_Overlaps(spatial_segmen_perlengkapan_polygon.geom::geometry, spatial_lhr_polygon.geom::geometry)'), '=', DB::raw('true'))
             ->where('spatial_segmen_perlengkapan_polygon.jalur', 'JALUR KIRI')
@@ -482,7 +482,7 @@ class LegerController extends Controller
             ->value('lhr__kiri_sum_golongan_v');
 
         // LHR GOLONGAN V KANAN
-        $lhr__kanan_sum_golongan_v =DB::table('spatial_lhr_polygon')
+        $lhr__kanan_sum_golongan_v = DB::table('spatial_lhr_polygon')
             ->selectRaw('SUM(CAST(spatial_lhr_polygon.gol_v AS NUMERIC)) as lhr__kanan_sum_golongan_v')
             ->join('spatial_segmen_perlengkapan_polygon', DB::raw('ST_Overlaps(spatial_segmen_perlengkapan_polygon.geom::geometry, spatial_lhr_polygon.geom::geometry)'), '=', DB::raw('true'))
             ->where('spatial_segmen_perlengkapan_polygon.jalur', 'JALUR KANAN')
@@ -516,7 +516,7 @@ class LegerController extends Controller
     public function getPagarOperasional(Request $request)
     {
         // PAGAR OPERASIONAL KIRI
-        $pagar_operasional_kiri =DB::table('spatial_pagar_operasional_line')
+        $pagar_operasional_kiri = DB::table('spatial_pagar_operasional_line')
             ->selectRaw('COUNT(spatial_pagar_operasional_line.id) as count, SUM(ST_Length(spatial_pagar_operasional_line.geom::geography)) as length')
             ->join('spatial_segmen_leger_polygon', DB::raw('ST_Intersects(spatial_segmen_leger_polygon.geom::geometry, spatial_pagar_operasional_line.geom::geometry)'), '=', DB::raw('true'))
             ->join('spatial_segmen_perlengkapan_polygon', DB::raw('ST_Intersects(spatial_segmen_perlengkapan_polygon.geom::geometry, spatial_pagar_operasional_line.geom::geometry)'), '=', DB::raw('true'))
@@ -525,7 +525,7 @@ class LegerController extends Controller
             ->get();
 
         // PAGAR OPERASIONAL KANAN
-        $pagar_operasional_kanan =DB::table('spatial_pagar_operasional_line')
+        $pagar_operasional_kanan = DB::table('spatial_pagar_operasional_line')
             ->selectRaw('COUNT(spatial_pagar_operasional_line.id) as count, SUM(ST_Length(spatial_pagar_operasional_line.geom::geography)) as length')
             ->join('spatial_segmen_leger_polygon', DB::raw('ST_Intersects(spatial_segmen_leger_polygon.geom::geometry, spatial_pagar_operasional_line.geom::geometry)'), '=', DB::raw('true'))
             ->join('spatial_segmen_perlengkapan_polygon', DB::raw('ST_Intersects(spatial_segmen_perlengkapan_polygon.geom::geometry, spatial_pagar_operasional_line.geom::geometry)'), '=', DB::raw('true'))
@@ -534,7 +534,7 @@ class LegerController extends Controller
             ->get();
 
         // PAGAR OPERASIONAL MEDIAN
-        $pagar_operasional_median =DB::table('spatial_pagar_operasional_line')
+        $pagar_operasional_median = DB::table('spatial_pagar_operasional_line')
             ->selectRaw('COUNT(spatial_pagar_operasional_line.id) as count, SUM(ST_Length(spatial_pagar_operasional_line.geom::geography)) as length')
             ->join('spatial_segmen_leger_polygon', DB::raw('ST_Intersects(spatial_segmen_leger_polygon.geom::geometry, spatial_pagar_operasional_line.geom::geometry)'), '=', DB::raw('true'))
             ->join('spatial_segmen_perlengkapan_polygon', DB::raw('ST_Intersects(spatial_segmen_perlengkapan_polygon.geom::geometry, spatial_pagar_operasional_line.geom::geometry)'), '=', DB::raw('true'))
@@ -552,7 +552,7 @@ class LegerController extends Controller
     public function getMarkaJalan(Request $request)
     {
         // MARKA JALAN KIRI
-        $marka_jalan_kiri =DB::table('spatial_marka_line')
+        $marka_jalan_kiri = DB::table('spatial_marka_line')
             ->join('spatial_segmen_leger_polygon', function ($join) {
                 $join->on(DB::raw('ST_Intersects(spatial_segmen_leger_polygon.geom::geometry, spatial_marka_line.geom::geometry)'), '=', DB::raw('true'));
             })
@@ -565,7 +565,7 @@ class LegerController extends Controller
             ->get();
 
         // MARKA JALAN KANAN
-        $marka_jalan_kanan =DB::table('spatial_marka_line')
+        $marka_jalan_kanan = DB::table('spatial_marka_line')
             ->join('spatial_segmen_leger_polygon', function ($join) {
                 $join->on(DB::raw('ST_Intersects(spatial_segmen_leger_polygon.geom::geometry, spatial_marka_line.geom::geometry)'), '=', DB::raw('true'));
             })
@@ -578,7 +578,7 @@ class LegerController extends Controller
             ->get();
 
         // MARKA JALAN MEDIAN
-        $marka_jalan_median =DB::table('spatial_marka_line')
+        $marka_jalan_median = DB::table('spatial_marka_line')
             ->selectRaw('COUNT(spatial_marka_line.id) as count, SUM(ST_Length(ST_Intersection(spatial_marka_line.geom::geometry, spatial_segmen_leger_polygon.geom::geometry)::geography)) as length')
             ->join('spatial_segmen_leger_polygon', function ($join) {
                 $join->on(DB::raw('ST_Intersects(spatial_segmen_leger_polygon.geom::geometry, spatial_marka_line.geom::geometry)'), '=', DB::raw('true'));
@@ -601,7 +601,7 @@ class LegerController extends Controller
     public function getTeleponAtasTanah(Request $request)
     {
         // TELEPON ATAS TANAH KIRI
-        $telepon_atas_tanah_kiri =DB::table('spatial_telepon_atastanah_line')
+        $telepon_atas_tanah_kiri = DB::table('spatial_telepon_atastanah_line')
             ->join('spatial_segmen_leger_polygon', function ($join) {
                 $join->on(DB::raw('ST_Intersects(spatial_segmen_leger_polygon.geom::geometry, spatial_telepon_atastanah_line.geom::geometry)'), '=', DB::raw('true'));
             })
@@ -614,7 +614,7 @@ class LegerController extends Controller
             ->get();
 
         // TELEPON ATAS TANAH KANAN
-        $telepon_atas_tanah_kanan =DB::table('spatial_telepon_atastanah_line')
+        $telepon_atas_tanah_kanan = DB::table('spatial_telepon_atastanah_line')
             ->join('spatial_segmen_leger_polygon', function ($join) {
                 $join->on(DB::raw('ST_Intersects(spatial_segmen_leger_polygon.geom::geometry, spatial_telepon_atastanah_line.geom::geometry)'), '=', DB::raw('true'));
             })
@@ -627,7 +627,7 @@ class LegerController extends Controller
             ->get();
 
         // TELEPON ATAS TANAH MEDIAN
-        $telepon_atas_tanah_median =DB::table('spatial_telepon_atastanah_line')
+        $telepon_atas_tanah_median = DB::table('spatial_telepon_atastanah_line')
             ->join('spatial_segmen_leger_polygon', function ($join) {
                 $join->on(DB::raw('ST_Intersects(spatial_segmen_leger_polygon.geom::geometry, spatial_telepon_atastanah_line.geom::geometry)'), '=', DB::raw('true'));
             })
@@ -649,7 +649,7 @@ class LegerController extends Controller
     public function getTeleponBawahTanah(Request $request)
     {
         // TELEPON BAWAH TANAH KIRI
-        $telepon_bawah_tanah_kiri =DB::table('spatial_telepon_bawahtanah_line')
+        $telepon_bawah_tanah_kiri = DB::table('spatial_telepon_bawahtanah_line')
             ->join('spatial_segmen_leger_polygon', function ($join) {
                 $join->on(DB::raw('ST_Intersects(spatial_segmen_leger_polygon.geom::geometry, spatial_telepon_bawahtanah_line.geom::geometry)'), '=', DB::raw('true'));
             })
@@ -662,7 +662,7 @@ class LegerController extends Controller
             ->get();
 
         // TELEPON BAWAH TANAH KANAN
-        $telepon_bawah_tanah_kanan =DB::table('spatial_telepon_bawahtanah_line')
+        $telepon_bawah_tanah_kanan = DB::table('spatial_telepon_bawahtanah_line')
             ->join('spatial_segmen_leger_polygon', function ($join) {
                 $join->on(DB::raw('ST_Intersects(spatial_segmen_leger_polygon.geom::geometry, spatial_telepon_bawahtanah_line.geom::geometry)'), '=', DB::raw('true'));
             })
@@ -675,7 +675,7 @@ class LegerController extends Controller
             ->get();
 
         // TELEPON BAWAH TANAH MEDIAN
-        $telepon_bawah_tanah_median =DB::table('spatial_telepon_bawahtanah_line')
+        $telepon_bawah_tanah_median = DB::table('spatial_telepon_bawahtanah_line')
             ->join('spatial_segmen_leger_polygon', function ($join) {
                 $join->on(DB::raw('ST_Intersects(spatial_segmen_leger_polygon.geom::geometry, spatial_telepon_bawahtanah_line.geom::geometry)'), '=', DB::raw('true'));
             })
@@ -697,7 +697,7 @@ class LegerController extends Controller
     public function getListrikAtasTanah(Request $request)
     {
         // LISTRIK ATAS KIRI
-        $listrik_atas_kiri =DB::table('spatial_listrik_atastanah_line')
+        $listrik_atas_kiri = DB::table('spatial_listrik_atastanah_line')
             ->selectRaw('COUNT(spatial_listrik_atastanah_line.id) as count, SUM(ST_Length(ST_Intersection(spatial_listrik_atastanah_line.geom::geometry, spatial_segmen_leger_polygon.geom::geometry)::geography)) as length')
             ->join('spatial_segmen_leger_polygon', DB::raw('ST_Intersects(spatial_segmen_leger_polygon.geom::geometry, spatial_listrik_atastanah_line.geom::geometry)'), '=', DB::raw('true'))
             ->join('spatial_segmen_perlengkapan_polygon', DB::raw('ST_Intersects(spatial_segmen_perlengkapan_polygon.geom::geometry, spatial_listrik_atastanah_line.geom::geometry)'), '=', DB::raw('true'))
@@ -706,7 +706,7 @@ class LegerController extends Controller
             ->get();
 
         // LISTRIK ATAS KANAN
-        $listrik_atas_kanan =DB::table('spatial_listrik_atastanah_line')
+        $listrik_atas_kanan = DB::table('spatial_listrik_atastanah_line')
             ->selectRaw('COUNT(spatial_listrik_atastanah_line.id) as count, SUM(ST_Length(ST_Intersection(spatial_listrik_atastanah_line.geom::geometry, spatial_segmen_leger_polygon.geom::geometry)::geography)) as length')
             ->join('spatial_segmen_leger_polygon', DB::raw('ST_Intersects(spatial_segmen_leger_polygon.geom::geometry, spatial_listrik_atastanah_line.geom::geometry)'), '=', DB::raw('true'))
             ->join('spatial_segmen_perlengkapan_polygon', DB::raw('ST_Intersects(spatial_segmen_perlengkapan_polygon.geom::geometry, spatial_listrik_atastanah_line.geom::geometry)'), '=', DB::raw('true'))
@@ -715,7 +715,7 @@ class LegerController extends Controller
             ->get();
 
         // LISTRIK ATAS MEDIAN
-        $listrik_atas_median =DB::table('spatial_listrik_atastanah_line')
+        $listrik_atas_median = DB::table('spatial_listrik_atastanah_line')
             ->selectRaw('COUNT(spatial_listrik_atastanah_line.id) as count, SUM(ST_Length(ST_Intersection(spatial_listrik_atastanah_line.geom::geometry, spatial_segmen_leger_polygon.geom::geometry)::geography)) as length')
             ->join('spatial_segmen_leger_polygon', DB::raw('ST_Intersects(spatial_segmen_leger_polygon.geom::geometry, spatial_listrik_atastanah_line.geom::geometry)'), '=', DB::raw('true'))
             ->join('spatial_segmen_perlengkapan_polygon', DB::raw('ST_Intersects(spatial_segmen_perlengkapan_polygon.geom::geometry, spatial_listrik_atastanah_line.geom::geometry)'), '=', DB::raw('true'))
@@ -733,7 +733,7 @@ class LegerController extends Controller
     public function getListrikBawahTanah(Request $request)
     {
         // LISTRIK BAWAH TANAH KIRI
-        $listrik_bawah_tanah_kiri =DB::table('spatial_listrik_bawahtanah_line')
+        $listrik_bawah_tanah_kiri = DB::table('spatial_listrik_bawahtanah_line')
             ->selectRaw('COUNT(spatial_listrik_bawahtanah_line.id) as count, SUM(ST_Length(ST_Intersection(spatial_listrik_bawahtanah_line.geom::geometry, spatial_segmen_leger_polygon.geom::geometry)::geography)) as length')
             ->join('spatial_segmen_leger_polygon', DB::raw('ST_Intersects(spatial_segmen_leger_polygon.geom::geometry, spatial_listrik_bawahtanah_line.geom::geometry)'), '=', DB::raw('true'))
             ->join('spatial_segmen_perlengkapan_polygon', DB::raw('ST_Intersects(spatial_segmen_perlengkapan_polygon.geom::geometry, spatial_listrik_bawahtanah_line.geom::geometry)'), '=', DB::raw('true'))
@@ -742,7 +742,7 @@ class LegerController extends Controller
             ->get();
 
         // LISTRIK BAWAH TANAH KANAN
-        $listrik_bawah_tanah_kanan =DB::table('spatial_listrik_bawahtanah_line')
+        $listrik_bawah_tanah_kanan = DB::table('spatial_listrik_bawahtanah_line')
             ->selectRaw('COUNT(spatial_listrik_bawahtanah_line.id) as count, SUM(ST_Length(ST_Intersection(spatial_listrik_bawahtanah_line.geom::geometry, spatial_segmen_leger_polygon.geom::geometry)::geography)) as length')
             ->join('spatial_segmen_leger_polygon', DB::raw('ST_Intersects(spatial_segmen_leger_polygon.geom::geometry, spatial_listrik_bawahtanah_line.geom::geometry)'), '=', DB::raw('true'))
             ->join('spatial_segmen_perlengkapan_polygon', DB::raw('ST_Intersects(spatial_segmen_perlengkapan_polygon.geom::geometry, spatial_listrik_bawahtanah_line.geom::geometry)'), '=', DB::raw('true'))
@@ -751,7 +751,7 @@ class LegerController extends Controller
             ->get();
 
         // LISTRIK BAWAH TANAH MEDIAN
-        $listrik_bawah_tanah_median =DB::table('spatial_listrik_bawahtanah_line')
+        $listrik_bawah_tanah_median = DB::table('spatial_listrik_bawahtanah_line')
             ->selectRaw('COUNT(spatial_listrik_bawahtanah_line.id) as count, SUM(ST_Length(ST_Intersection(spatial_listrik_bawahtanah_line.geom::geometry, spatial_segmen_leger_polygon.geom::geometry)::geography)) as length')
             ->join('spatial_segmen_leger_polygon', DB::raw('ST_Intersects(spatial_segmen_leger_polygon.geom::geometry, spatial_listrik_bawahtanah_line.geom::geometry)'), '=', DB::raw('true'))
             ->join('spatial_segmen_perlengkapan_polygon', DB::raw('ST_Intersects(spatial_segmen_perlengkapan_polygon.geom::geometry, spatial_listrik_bawahtanah_line.geom::geometry)'), '=', DB::raw('true'))
@@ -1334,17 +1334,17 @@ class LegerController extends Controller
             })
             ->where('spatial_segmen_leger_polygon.id_leger', $request->leger_id)
             ->first();
-        
+
         if (!$administratif) {
             return response()->json(['error' => 'Data not found'], 404);
         }
-        
+
         // Ambil semua ID dalam satu query per tabel
         $kode_prov = DB::table('reff_kode_provinsi')->where('kode', $administratif->kode_prov)->value('id');
         $kode_kab = DB::table('reff_kode_kabkot')->where('kode', $administratif->kode_kab)->value('id');
         $kode_kec = DB::table('reff_kode_kecamatan')->where('kode', $administratif->kode_kec)->value('id');
         $kode_desa = DB::table('reff_kode_desakel')->where('kode', $administratif->kode_desa)->value('id');
-        
+
         return json_encode([
             'kode_prov' => $kode_prov,
             'kode_kab'  => $kode_kab,
@@ -2745,54 +2745,58 @@ class LegerController extends Controller
             ->where('spatial_segmen_leger_polygon.id_leger', $request->leger_id)
             ->selectRaw('spatial_segmen_leger_polygon.km as km')
             ->first();
-            
-            $leger_id_selanjutnya = 'M.' . str_pad((int) substr($request->leger_id, 2) + 1, 3, '0', STR_PAD_LEFT);
 
-            $titik_akhir_segmen_ruas_jalan = DB::table('spatial_segmen_leger_polygon')
+        $leger_id_selanjutnya = 'M.' . str_pad((int) substr($request->leger_id, 2) + 1, 3, '0', STR_PAD_LEFT);
+
+        $titik_akhir_segmen_ruas_jalan = DB::table('spatial_segmen_leger_polygon')
             ->where('spatial_segmen_leger_polygon.id_leger', $leger_id_selanjutnya)
             ->selectRaw('spatial_segmen_leger_polygon.km as km')
             ->first();
-            
-            $titik_akhir_segmen_akhir = DB::table('spatial_segmen_seksi_polygon')
+
+        $titik_akhir_segmen_akhir = DB::table('spatial_segmen_seksi_polygon')
             ->where('spatial_segmen_seksi_polygon.jalan_tol_id', 1)
             ->selectRaw('spatial_segmen_seksi_polygon.km_akhir as km')
             ->first();
-            
-            $titik_awal_km = (float) str_replace('+', '.', $titik_awal_segmen_ruas_jalan->km);
-            
-            if ($titik_akhir_segmen_ruas_jalan)
-            {
-                $titik_akhir_km = (float) str_replace('+', '.', $titik_akhir_segmen_ruas_jalan->km);
-            }
-            else
-            {
-                $titik_akhir_km = (float) str_replace('+', '.', $titik_akhir_segmen_akhir->km);
-            }
-            
+
+        $titik_awal_km = (float) str_replace('+', '.', $titik_awal_segmen_ruas_jalan->km);
+
+        if ($titik_akhir_segmen_ruas_jalan) {
+            $titik_akhir_km = (float) str_replace('+', '.', $titik_akhir_segmen_ruas_jalan->km);
+        } else {
+            $titik_akhir_km = (float) str_replace('+', '.', $titik_akhir_segmen_akhir->km);
+        }
+
         $titik_ikat_patok_km = DB::table('spatial_patok_km_point')
             ->whereRaw("CAST(REPLACE(km, '+', '.') AS FLOAT) BETWEEN ? AND ?", [$titik_awal_km, $titik_akhir_km])
-            ->where('km','like','%+000')
+            ->where('km', 'like', '%+000')
             ->selectRaw('km, ST_X(geom::geometry) as x, ST_Y(geom::geometry) as y, ST_Z(geom::geometry) as z')
             ->first();
 
-            return json_encode([
-                'titik_awal_segmen' => $titik_awal_segmen_ruas_jalan ?? null,
-                'titik_akhir_segmen' => $titik_akhir_segmen_ruas_jalan ?? $titik_akhir_segmen_akhir ?? null,
-                'titik_ikat_patok_km' => $titik_ikat_patok_km ?? null,
-            ]);
+        return json_encode([
+            'titik_awal_segmen' => $titik_awal_segmen_ruas_jalan ?? null,
+            'titik_akhir_segmen' => $titik_akhir_segmen_ruas_jalan ?? $titik_akhir_segmen_akhir ?? null,
+            'titik_ikat_patok_km' => $titik_ikat_patok_km ?? null,
+        ]);
     }
 
     public function getDataJalanUtama(Request $request)
     {
         $jalan_tol_id = $request->jalan_tol_id;
 
-            $awal = (int) substr($request->leger_id_awal,2);
-            $akhir = (int) substr($request->leger_id_akhir,2);
-    
-            $leger = DB::table('leger_jalan')
+        $awal = (int) substr($request->leger_id_awal, 2);
+        $akhir = (int) substr($request->leger_id_akhir, 2);
+
+        // jika awal lebih besar dari akhir
+        if ($awal > $akhir) {
+            $awal = (int) substr($request->leger_id_akhir, 2);
+            $akhir = (int) substr($request->leger_id_awal, 2);
+        }
+
+
+        $leger = DB::table('leger_jalan')
             ->select('leger_jalan.id', 'leger_jalan.kode_leger')
-            ->join('leger', 'leger_jalan.leger_id', '=', 'leger.id') 
-            ->where('leger.jalan_tol_id', '=', $jalan_tol_id) 
+            ->join('leger', 'leger_jalan.leger_id', '=', 'leger.id')
+            ->where('leger.jalan_tol_id', '=', $jalan_tol_id)
             ->where('leger_jalan.kode_leger', 'like', 'M%')
             ->whereBetween(DB::raw('CAST(SUBSTRING(leger_jalan.kode_leger, 3) AS INT)'), [$awal, $akhir])
             ->orderBy(DB::raw('CAST(SUBSTRING(leger_jalan.kode_leger, 3) AS INT)'), 'asc')
@@ -2828,7 +2832,7 @@ class LegerController extends Controller
                 ],
 
                 "data_jalan_teknik2_median" => [
-                        "lebar" => DataJalanTeknik2Median::where("id_leger_jalan", $l->id)->where("uraian", "LEBAR")->first(),
+                    "lebar" => DataJalanTeknik2Median::where("id_leger_jalan", $l->id)->where("uraian", "LEBAR")->first(),
                 ],
 
                 "data_jalan_teknik2_bahujalan" => [
@@ -2890,7 +2894,7 @@ class LegerController extends Controller
                     "superelevasi" => DataJalanGeometrik::where("id_leger_jalan", $l->id)->where("uraian", "SUPERELEVASI")->first(),
                     "radius" => DataJalanGeometrik::where("id_leger_jalan", $l->id)->where("uraian", "RADIUS")->first(),
                 ],
-                
+
                 "data_jalan_situasi" => [
                     "terrain_kiri" => DataJalanSituasi::where("id_leger_jalan", $l->id)->where("uraian", "TERRAIN KIRI")->first(),
                     "terrain_kanan" => DataJalanSituasi::where("id_leger_jalan", $l->id)->where("uraian", "TERRAIN KANAN")->first(),
@@ -2906,14 +2910,14 @@ class LegerController extends Controller
     {
         $jalan_tol_id = $request->jalan_tol_id;
 
-    
+
         $leger = DB::table('leger_jalan')
-        ->select('leger_jalan.id', 'leger_jalan.kode_leger')
-        ->join('leger', 'leger_jalan.leger_id', '=', 'leger.id') 
-        ->where('leger.jalan_tol_id', '=', $jalan_tol_id)
-        ->where('leger_jalan.kode_leger', 'like', 'M%')
-        ->orderBy(DB::raw('CAST(SUBSTRING(leger_jalan.kode_leger, 3) AS INT)'), 'asc')
-        ->get();
+            ->select('leger_jalan.id', 'leger_jalan.kode_leger')
+            ->join('leger', 'leger_jalan.leger_id', '=', 'leger.id')
+            ->where('leger.jalan_tol_id', '=', $jalan_tol_id)
+            ->where('leger_jalan.kode_leger', 'like', 'M%')
+            ->orderBy(DB::raw('CAST(SUBSTRING(leger_jalan.kode_leger, 3) AS INT)'), 'asc')
+            ->get();
 
         $data = [];
         foreach ($leger as $l) {
@@ -2945,7 +2949,7 @@ class LegerController extends Controller
                 ],
 
                 "data_jalan_teknik2_median" => [
-                        "lebar" => DataJalanTeknik2Median::where("id_leger_jalan", $l->id)->where("uraian", "LEBAR")->first(),
+                    "lebar" => DataJalanTeknik2Median::where("id_leger_jalan", $l->id)->where("uraian", "LEBAR")->first(),
                 ],
 
                 "data_jalan_teknik2_bahujalan" => [
@@ -3007,7 +3011,7 @@ class LegerController extends Controller
                     "superelevasi" => DataJalanGeometrik::where("id_leger_jalan", $l->id)->where("uraian", "SUPERELEVASI")->first(),
                     "radius" => DataJalanGeometrik::where("id_leger_jalan", $l->id)->where("uraian", "RADIUS")->first(),
                 ],
-                
+
                 "data_jalan_situasi" => [
                     "terrain_kiri" => DataJalanSituasi::where("id_leger_jalan", $l->id)->where("uraian", "TERRAIN KIRI")->first(),
                     "terrain_kanan" => DataJalanSituasi::where("id_leger_jalan", $l->id)->where("uraian", "TERRAIN KANAN")->first(),
@@ -3022,7 +3026,7 @@ class LegerController extends Controller
     public function getLegerImage()
     {
         $data = DataJalanGambar::select("*")
-        ->get();
+            ->get();
         return response()->json($data);
     }
 
@@ -3030,12 +3034,12 @@ class LegerController extends Controller
     {
 
         $leger = DB::table('leger_jalan')
-        ->select('leger_jalan.id', 'leger_jalan.kode_leger')
-        ->join('leger', 'leger_jalan.leger_id', '=', 'leger.id') 
-        ->where('leger.jalan_tol_id', '=', $jalan_tol_id)
-        ->where('leger_jalan.kode_leger', 'like', 'M%')
-        ->orderBy(DB::raw('CAST(SUBSTRING(leger_jalan.kode_leger, 3) AS INT)'), 'asc')
-        ->get();
+            ->select('leger_jalan.id', 'leger_jalan.kode_leger')
+            ->join('leger', 'leger_jalan.leger_id', '=', 'leger.id')
+            ->where('leger.jalan_tol_id', '=', $jalan_tol_id)
+            ->where('leger_jalan.kode_leger', 'like', 'M%')
+            ->orderBy(DB::raw('CAST(SUBSTRING(leger_jalan.kode_leger, 3) AS INT)'), 'asc')
+            ->get();
 
         //init
         $data = [];
@@ -3066,7 +3070,7 @@ class LegerController extends Controller
                 'luas_badan_jalan' => json_decode($this->getLuasBadanJalan($request), true),
                 'luas_bahu_jalan' => json_decode($this->getLuasBahuJalan($request), true),
                 'administratif' => json_decode($this->getAdministratif($request), true),
-                'rumah_kabel' => json_decode($this->getRumahKabel($request), true),  
+                'rumah_kabel' => json_decode($this->getRumahKabel($request), true),
                 'telepon_bawah_tanah' => json_decode($this->getTeleponBawahTanah($request), true),
                 'jembatan' => json_decode($this->getJembatan($request), true),
                 'tiang_listrik' => json_decode($this->getTiangListrik($request), true),
@@ -3082,412 +3086,412 @@ class LegerController extends Controller
         $jalan_tol_id = $request->jalan_tol_id;
 
         $leger = LegerJalan::select('leger_jalan.id', 'leger_jalan.kode_leger')
-        ->join('leger', 'leger_jalan.leger_id', '=', 'leger.id')
-        ->where('leger.jalan_tol_id', $jalan_tol_id)
-        ->where('leger_jalan.kode_leger', 'like', 'M%')
-        ->orderByRaw('CAST(SUBSTRING(leger_jalan.kode_leger FROM 3) AS INT)')
-        ->get()
-        ->toArray();
+            ->join('leger', 'leger_jalan.leger_id', '=', 'leger.id')
+            ->where('leger.jalan_tol_id', $jalan_tol_id)
+            ->where('leger_jalan.kode_leger', 'like', 'M%')
+            ->orderByRaw('CAST(SUBSTRING(leger_jalan.kode_leger FROM 3) AS INT)')
+            ->get()
+            ->toArray();
 
         $tol = JalanTol::select("tahun")
-        ->where("id", $jalan_tol_id)
-        ->get()->first();
-        
+            ->where("id", $jalan_tol_id)
+            ->get()->first();
+
         $data = $this->getDataJalanUtamaAll($jalan_tol_id);
         $zipped = array_map(null, $leger, $data);
 
-        foreach($zipped as [$l, $d]){
+        foreach ($zipped as [$l, $d]) {
 
             DataJalanIdentifikasi::where('id_leger_jalan', isset($l['id']) ? $l['id'] : null)
-            ->delete();
+                ->delete();
             DataJalanTeknik1::where('id_leger_jalan', isset($l['id']) ? $l['id'] : null)
-            ->delete();
+                ->delete();
             DataJalanTeknik2Lapis::where('id_leger_jalan', isset($l['id']) ? $l['id'] : null)
-            ->delete();
+                ->delete();
             DataJalanTeknik2Median::where('id_leger_jalan', isset($l['id']) ? $l['id'] : null)
-            ->delete();
+                ->delete();
             DataJalanTeknik2Bahujalan::where('id_leger_jalan', isset($l['id']) ? $l['id'] : null)
-            ->delete();
+                ->delete();
             DataJalanTeknik3Goronggorong::where('id_leger_jalan', isset($l['id']) ? $l['id'] : null)
-            ->delete();
+                ->delete();
             DataJalanTeknik3Saluran::where('id_leger_jalan', isset($l['id']) ? $l['id'] : null)
-            ->delete();
+                ->delete();
             DataJalanTeknik4::where('id_leger_jalan', isset($l['id']) ? $l['id'] : null)
-            ->delete();
+                ->delete();
             DataJalanTeknik5Utilitas::where('id_leger_jalan', isset($l['id']) ? $l['id'] : null)
-            ->delete();
+                ->delete();
             DataJalanLHR::where('id_leger_jalan', isset($l['id']) ? $l['id'] : null)
-            ->delete();
+                ->delete();
             DataJalanGeometrik::where('id_leger_jalan', isset($l['id']) ? $l['id'] : null)
-            ->delete();
+                ->delete();
             DataJalanSituasi::where('id_leger_jalan', isset($l['id']) ? $l['id'] : null)
-            ->delete();
+                ->delete();
 
             $data_jalan_identifikasi =
-            [
-                'kode_provinsi_id' => isset($d['administratif']['kode_prov']) ? $d['administratif']['kode_prov'] : null,
-                'kode_kabkot_id' => isset($d['administratif']['kode_kab']) ? $d['administratif']['kode_kab'] : null,
-                'kode_kecamatan_id' => isset($d['administratif']['kode_kec']) ? $d['administratif']['kode_kec'] : null,
-                'kode_desakel_id' => isset($d['administratif']['kode_desa']) ? $d['administratif']['kode_desa'] : null,
-                'nomor_ruas' => null,
-                'nomor_seksi' => null,
-                'deskripsi_seksi' => null,
-                'lokasi' => null,
-                'titik_ikat_leger_kode' => null,
-                'titik_ikat_leger_x' => null,
-                'titik_ikat_leger_y' => null,
-                'titik_ikat_leger_z' => null,
-                'titik_ikat_leger_deskripsi' => null,
-                'titik_ikat_patok_kode' => null,
-                'titik_ikat_patok_deskripsi' => null,
-                'titik_awal_segmen_kode' => null,
-                'titik_awal_segmen_x' => null,
-                'titik_awal_segmen_y' => null,
-                'titik_awal_segmen_z' => null,
-                'titik_awal_segmen_deskripsi' => null,
-                'titik_akhir_segmen_kode' => null,
-                'titik_akhir_segmen_x' => null,
-                'titik_akhir_segmen_y' => null,
-                'titik_akhir_segmen_z' => null,
-                'titik_akhir_segmen_deskripsi' => null, 
-                'id_leger_jalan' => isset($l['id']) ? $l['id'] : null,
-                'titik_ikat_patok_km' => isset($d['titik_segmen']['titik_ikat_patok_km']['km']) ? $d['titik_segmen']['titik_ikat_patok_km']['km'] : null,
-                'titik_ikat_patok_x' => isset($d['titik_segmen']['titik_ikat_patok_km']['x']) ? $d['titik_segmen']['titik_ikat_patok_km']['x'] : null,
-                'titik_ikat_patok_y' => isset($d['titik_segmen']['titik_ikat_patok_km']['y']) ? $d['titik_segmen']['titik_ikat_patok_km']['y'] : null,
-                'titik_ikat_patok_z' => isset($d['titik_segmen']['titik_ikat_patok_km']['z']) ? $d['titik_segmen']['titik_ikat_patok_km']['z'] : null,
-                'titik_awal_segmen_km' => isset($d['titik_segmen']['titik_awal_segmen']) ? $d['titik_segmen']['titik_awal_segmen']['km'] : null,
-                'titik_akhir_segmen_km' => isset($d['titik_segmen']['titik_akhir_segmen']) ? $d['titik_segmen']['titik_akhir_segmen']['km'] : null,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
+                [
+                    'kode_provinsi_id' => isset($d['administratif']['kode_prov']) ? $d['administratif']['kode_prov'] : null,
+                    'kode_kabkot_id' => isset($d['administratif']['kode_kab']) ? $d['administratif']['kode_kab'] : null,
+                    'kode_kecamatan_id' => isset($d['administratif']['kode_kec']) ? $d['administratif']['kode_kec'] : null,
+                    'kode_desakel_id' => isset($d['administratif']['kode_desa']) ? $d['administratif']['kode_desa'] : null,
+                    'nomor_ruas' => null,
+                    'nomor_seksi' => null,
+                    'deskripsi_seksi' => null,
+                    'lokasi' => null,
+                    'titik_ikat_leger_kode' => null,
+                    'titik_ikat_leger_x' => null,
+                    'titik_ikat_leger_y' => null,
+                    'titik_ikat_leger_z' => null,
+                    'titik_ikat_leger_deskripsi' => null,
+                    'titik_ikat_patok_kode' => null,
+                    'titik_ikat_patok_deskripsi' => null,
+                    'titik_awal_segmen_kode' => null,
+                    'titik_awal_segmen_x' => null,
+                    'titik_awal_segmen_y' => null,
+                    'titik_awal_segmen_z' => null,
+                    'titik_awal_segmen_deskripsi' => null,
+                    'titik_akhir_segmen_kode' => null,
+                    'titik_akhir_segmen_x' => null,
+                    'titik_akhir_segmen_y' => null,
+                    'titik_akhir_segmen_z' => null,
+                    'titik_akhir_segmen_deskripsi' => null,
+                    'id_leger_jalan' => isset($l['id']) ? $l['id'] : null,
+                    'titik_ikat_patok_km' => isset($d['titik_segmen']['titik_ikat_patok_km']['km']) ? $d['titik_segmen']['titik_ikat_patok_km']['km'] : null,
+                    'titik_ikat_patok_x' => isset($d['titik_segmen']['titik_ikat_patok_km']['x']) ? $d['titik_segmen']['titik_ikat_patok_km']['x'] : null,
+                    'titik_ikat_patok_y' => isset($d['titik_segmen']['titik_ikat_patok_km']['y']) ? $d['titik_segmen']['titik_ikat_patok_km']['y'] : null,
+                    'titik_ikat_patok_z' => isset($d['titik_segmen']['titik_ikat_patok_km']['z']) ? $d['titik_segmen']['titik_ikat_patok_km']['z'] : null,
+                    'titik_awal_segmen_km' => isset($d['titik_segmen']['titik_awal_segmen']) ? $d['titik_segmen']['titik_awal_segmen']['km'] : null,
+                    'titik_akhir_segmen_km' => isset($d['titik_segmen']['titik_akhir_segmen']) ? $d['titik_segmen']['titik_akhir_segmen']['km'] : null,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
             DataJalanIdentifikasi::insert($data_jalan_identifikasi);
 
             $data_jalan_teknik1 =
-            [
                 [
-                    'id_leger_jalan' => isset($l['id']) ? $l['id'] : null,
-                    'tahun' => isset($tol['tahun']) ? $tol['tahun'] : null,
-                    'uraian' => 'lahan rumija',
-                    'luas' => isset($d['luas_rumija']['luas']) ? $d['luas_rumija']['luas'] : null,
-                    'data_perolehan' => 'HASIL LAPANGAN',
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-                [
-                    'id_leger_jalan' => isset($l['id']) ? $l['id'] : null,
-                    'tahun' => isset($tol['tahun']) ? $tol['tahun'] : null,
-                    'uraian' => 'badan jalan',
-                    'luas' => isset($d['luas_badan_jalan']['luas']) ? $d['luas_badan_jalan']['luas'] : null,
-                    'data_perolehan' => 'HASIL LAPANGAN',
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-                [
-                    'id_leger_jalan' => isset($l['id']) ? $l['id'] : null,
-                    'tahun' => isset($tol['tahun']) ? $tol['tahun'] : null,
-                    'uraian' => 'bahu jalan',
-                    'luas' => isset($d['luas_badan_jalan']['luas']) ? $d['luas_badan_jalan']['luas'] : null,
-                    'data_perolehan' => 'HASIL LAPANGAN',
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-            ];
+                    [
+                        'id_leger_jalan' => isset($l['id']) ? $l['id'] : null,
+                        'tahun' => isset($tol['tahun']) ? $tol['tahun'] : null,
+                        'uraian' => 'lahan rumija',
+                        'luas' => isset($d['luas_rumija']['luas']) ? $d['luas_rumija']['luas'] : null,
+                        'data_perolehan' => 'HASIL LAPANGAN',
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                    [
+                        'id_leger_jalan' => isset($l['id']) ? $l['id'] : null,
+                        'tahun' => isset($tol['tahun']) ? $tol['tahun'] : null,
+                        'uraian' => 'badan jalan',
+                        'luas' => isset($d['luas_badan_jalan']['luas']) ? $d['luas_badan_jalan']['luas'] : null,
+                        'data_perolehan' => 'HASIL LAPANGAN',
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                    [
+                        'id_leger_jalan' => isset($l['id']) ? $l['id'] : null,
+                        'tahun' => isset($tol['tahun']) ? $tol['tahun'] : null,
+                        'uraian' => 'bahu jalan',
+                        'luas' => isset($d['luas_badan_jalan']['luas']) ? $d['luas_badan_jalan']['luas'] : null,
+                        'data_perolehan' => 'HASIL LAPANGAN',
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                ];
             DataJalanTeknik1::insert($data_jalan_teknik1);
 
             $data_jalan_teknik2_lapis =
-            [
                 [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'jenis_lapis_id' => 1,
-                    'uraian' => 'TEBAL',
-                    'nilai_ki_lajur1' => $d['badan_jalan']['lapis_permukaan']['kiri']['lajur_1']['tebal'] ?? null,
-                    'nilai_ki_lajur2' => $d['badan_jalan']['lapis_permukaan']['kiri']['lajur_2']['tebal'] ?? null,
-                    'nilai_ki_lajur3' => $d['badan_jalan']['lapis_permukaan']['kiri']['lajur_3']['tebal'] ?? null,
-                    'nilai_ki_lajur4' => $d['badan_jalan']['lapis_permukaan']['kiri']['lajur_4']['tebal'] ?? null,
-                    'nilai_ka_lajur1' => $d['badan_jalan']['lapis_permukaan']['kanan']['lajur_1']['tebal'] ?? null,
-                    'nilai_ka_lajur2' => $d['badan_jalan']['lapis_permukaan']['kanan']['lajur_2']['tebal'] ?? null,
-                    'nilai_ka_lajur3' => $d['badan_jalan']['lapis_permukaan']['kanan']['lajur_3']['tebal'] ?? null,
-                    'nilai_ka_lajur4' => $d['badan_jalan']['lapis_permukaan']['kanan']['lajur_4']['tebal'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-                [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'jenis_lapis_id' => 1,
-                    'uraian' => 'JENIS',
-                    'nilai_ki_lajur1' => $d['badan_jalan']['lapis_permukaan']['kiri']['lajur_1']['jenis'] ?? null,
-                    'nilai_ki_lajur2' => $d['badan_jalan']['lapis_permukaan']['kiri']['lajur_2']['jenis'] ?? null,
-                    'nilai_ki_lajur3' => $d['badan_jalan']['lapis_permukaan']['kiri']['lajur_3']['jenis'] ?? null,
-                    'nilai_ki_lajur4' => $d['badan_jalan']['lapis_permukaan']['kiri']['lajur_4']['jenis'] ?? null,
-                    'nilai_ka_lajur1' => $d['badan_jalan']['lapis_permukaan']['kanan']['lajur_1']['jenis'] ?? null,
-                    'nilai_ka_lajur2' => $d['badan_jalan']['lapis_permukaan']['kanan']['lajur_2']['jenis'] ?? null,
-                    'nilai_ka_lajur3' => $d['badan_jalan']['lapis_permukaan']['kanan']['lajur_3']['jenis'] ?? null,
-                    'nilai_ka_lajur4' => $d['badan_jalan']['lapis_permukaan']['kanan']['lajur_4']['jenis'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-                [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'jenis_lapis_id' => 2,
-                    'uraian' => 'TEBAL',
-                    'nilai_ki_lajur1' => $d['badan_jalan']['lapis_pondasi_atas']['kiri']['lajur_1']['tebal'] ?? null,
-                    'nilai_ki_lajur2' => $d['badan_jalan']['lapis_pondasi_atas']['kiri']['lajur_2']['tebal'] ?? null,
-                    'nilai_ki_lajur3' => $d['badan_jalan']['lapis_pondasi_atas']['kiri']['lajur_3']['tebal'] ?? null,
-                    'nilai_ki_lajur4' => $d['badan_jalan']['lapis_pondasi_atas']['kiri']['lajur_4']['tebal'] ?? null,
-                    'nilai_ka_lajur1' => $d['badan_jalan']['lapis_pondasi_atas']['kanan']['lajur_1']['tebal'] ?? null,
-                    'nilai_ka_lajur2' => $d['badan_jalan']['lapis_pondasi_atas']['kanan']['lajur_2']['tebal'] ?? null,
-                    'nilai_ka_lajur3' => $d['badan_jalan']['lapis_pondasi_atas']['kanan']['lajur_3']['tebal'] ?? null,
-                    'nilai_ka_lajur4' => $d['badan_jalan']['lapis_pondasi_atas']['kanan']['lajur_4']['tebal'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-                [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'jenis_lapis_id' => 2,
-                    'uraian' => 'JENIS',
-                    'nilai_ki_lajur1' => $d['badan_jalan']['lapis_pondasi_atas']['kiri']['lajur_1']['jenis'] ?? null,
-                    'nilai_ki_lajur2' => $d['badan_jalan']['lapis_pondasi_atas']['kiri']['lajur_2']['jenis'] ?? null,
-                    'nilai_ki_lajur3' => $d['badan_jalan']['lapis_pondasi_atas']['kiri']['lajur_3']['jenis'] ?? null,
-                    'nilai_ki_lajur4' => $d['badan_jalan']['lapis_pondasi_atas']['kiri']['lajur_4']['jenis'] ?? null,
-                    'nilai_ka_lajur1' => $d['badan_jalan']['lapis_pondasi_atas']['kanan']['lajur_1']['jenis'] ?? null,
-                    'nilai_ka_lajur2' => $d['badan_jalan']['lapis_pondasi_atas']['kanan']['lajur_2']['jenis'] ?? null,
-                    'nilai_ka_lajur3' => $d['badan_jalan']['lapis_pondasi_atas']['kanan']['lajur_3']['jenis'] ?? null,
-                    'nilai_ka_lajur4' => $d['badan_jalan']['lapis_pondasi_atas']['kanan']['lajur_4']['jenis'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-                [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'jenis_lapis_id' => 3,
-                    'uraian' => 'TEBAL',
-                    'nilai_ki_lajur1' => $d['badan_jalan']['lapis_pondasi_bawah']['kiri']['lajur_1']['tebal'] ?? null,
-                    'nilai_ki_lajur2' => $d['badan_jalan']['lapis_pondasi_bawah']['kiri']['lajur_2']['tebal'] ?? null,
-                    'nilai_ki_lajur3' => $d['badan_jalan']['lapis_pondasi_bawah']['kiri']['lajur_3']['tebal'] ?? null,
-                    'nilai_ki_lajur4' => $d['badan_jalan']['lapis_pondasi_bawah']['kiri']['lajur_4']['tebal'] ?? null,
-                    'nilai_ka_lajur1' => $d['badan_jalan']['lapis_pondasi_bawah']['kanan']['lajur_1']['tebal'] ?? null,
-                    'nilai_ka_lajur2' => $d['badan_jalan']['lapis_pondasi_bawah']['kanan']['lajur_2']['tebal'] ?? null,
-                    'nilai_ka_lajur3' => $d['badan_jalan']['lapis_pondasi_bawah']['kanan']['lajur_3']['tebal'] ?? null,
-                    'nilai_ka_lajur4' => $d['badan_jalan']['lapis_pondasi_bawah']['kanan']['lajur_4']['tebal'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-                [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'jenis_lapis_id' => 3,
-                    'uraian' => 'JENIS',
-                    'nilai_ki_lajur1' => $d['badan_jalan']['lapis_pondasi_bawah']['kiri']['lajur_1']['jenis'] ?? null,
-                    'nilai_ki_lajur2' => $d['badan_jalan']['lapis_pondasi_bawah']['kiri']['lajur_2']['jenis'] ?? null,
-                    'nilai_ki_lajur3' => $d['badan_jalan']['lapis_pondasi_bawah']['kiri']['lajur_3']['jenis'] ?? null,
-                    'nilai_ki_lajur4' => $d['badan_jalan']['lapis_pondasi_bawah']['kiri']['lajur_4']['jenis'] ?? null,
-                    'nilai_ka_lajur1' => $d['badan_jalan']['lapis_pondasi_bawah']['kanan']['lajur_1']['jenis'] ?? null,
-                    'nilai_ka_lajur2' => $d['badan_jalan']['lapis_pondasi_bawah']['kanan']['lajur_2']['jenis'] ?? null,
-                    'nilai_ka_lajur3' => $d['badan_jalan']['lapis_pondasi_bawah']['kanan']['lajur_3']['jenis'] ?? null,
-                    'nilai_ka_lajur4' => $d['badan_jalan']['lapis_pondasi_bawah']['kanan']['lajur_4']['jenis'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-            ];
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'jenis_lapis_id' => 1,
+                        'uraian' => 'TEBAL',
+                        'nilai_ki_lajur1' => $d['badan_jalan']['lapis_permukaan']['kiri']['lajur_1']['tebal'] ?? null,
+                        'nilai_ki_lajur2' => $d['badan_jalan']['lapis_permukaan']['kiri']['lajur_2']['tebal'] ?? null,
+                        'nilai_ki_lajur3' => $d['badan_jalan']['lapis_permukaan']['kiri']['lajur_3']['tebal'] ?? null,
+                        'nilai_ki_lajur4' => $d['badan_jalan']['lapis_permukaan']['kiri']['lajur_4']['tebal'] ?? null,
+                        'nilai_ka_lajur1' => $d['badan_jalan']['lapis_permukaan']['kanan']['lajur_1']['tebal'] ?? null,
+                        'nilai_ka_lajur2' => $d['badan_jalan']['lapis_permukaan']['kanan']['lajur_2']['tebal'] ?? null,
+                        'nilai_ka_lajur3' => $d['badan_jalan']['lapis_permukaan']['kanan']['lajur_3']['tebal'] ?? null,
+                        'nilai_ka_lajur4' => $d['badan_jalan']['lapis_permukaan']['kanan']['lajur_4']['tebal'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'jenis_lapis_id' => 1,
+                        'uraian' => 'JENIS',
+                        'nilai_ki_lajur1' => $d['badan_jalan']['lapis_permukaan']['kiri']['lajur_1']['jenis'] ?? null,
+                        'nilai_ki_lajur2' => $d['badan_jalan']['lapis_permukaan']['kiri']['lajur_2']['jenis'] ?? null,
+                        'nilai_ki_lajur3' => $d['badan_jalan']['lapis_permukaan']['kiri']['lajur_3']['jenis'] ?? null,
+                        'nilai_ki_lajur4' => $d['badan_jalan']['lapis_permukaan']['kiri']['lajur_4']['jenis'] ?? null,
+                        'nilai_ka_lajur1' => $d['badan_jalan']['lapis_permukaan']['kanan']['lajur_1']['jenis'] ?? null,
+                        'nilai_ka_lajur2' => $d['badan_jalan']['lapis_permukaan']['kanan']['lajur_2']['jenis'] ?? null,
+                        'nilai_ka_lajur3' => $d['badan_jalan']['lapis_permukaan']['kanan']['lajur_3']['jenis'] ?? null,
+                        'nilai_ka_lajur4' => $d['badan_jalan']['lapis_permukaan']['kanan']['lajur_4']['jenis'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'jenis_lapis_id' => 2,
+                        'uraian' => 'TEBAL',
+                        'nilai_ki_lajur1' => $d['badan_jalan']['lapis_pondasi_atas']['kiri']['lajur_1']['tebal'] ?? null,
+                        'nilai_ki_lajur2' => $d['badan_jalan']['lapis_pondasi_atas']['kiri']['lajur_2']['tebal'] ?? null,
+                        'nilai_ki_lajur3' => $d['badan_jalan']['lapis_pondasi_atas']['kiri']['lajur_3']['tebal'] ?? null,
+                        'nilai_ki_lajur4' => $d['badan_jalan']['lapis_pondasi_atas']['kiri']['lajur_4']['tebal'] ?? null,
+                        'nilai_ka_lajur1' => $d['badan_jalan']['lapis_pondasi_atas']['kanan']['lajur_1']['tebal'] ?? null,
+                        'nilai_ka_lajur2' => $d['badan_jalan']['lapis_pondasi_atas']['kanan']['lajur_2']['tebal'] ?? null,
+                        'nilai_ka_lajur3' => $d['badan_jalan']['lapis_pondasi_atas']['kanan']['lajur_3']['tebal'] ?? null,
+                        'nilai_ka_lajur4' => $d['badan_jalan']['lapis_pondasi_atas']['kanan']['lajur_4']['tebal'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'jenis_lapis_id' => 2,
+                        'uraian' => 'JENIS',
+                        'nilai_ki_lajur1' => $d['badan_jalan']['lapis_pondasi_atas']['kiri']['lajur_1']['jenis'] ?? null,
+                        'nilai_ki_lajur2' => $d['badan_jalan']['lapis_pondasi_atas']['kiri']['lajur_2']['jenis'] ?? null,
+                        'nilai_ki_lajur3' => $d['badan_jalan']['lapis_pondasi_atas']['kiri']['lajur_3']['jenis'] ?? null,
+                        'nilai_ki_lajur4' => $d['badan_jalan']['lapis_pondasi_atas']['kiri']['lajur_4']['jenis'] ?? null,
+                        'nilai_ka_lajur1' => $d['badan_jalan']['lapis_pondasi_atas']['kanan']['lajur_1']['jenis'] ?? null,
+                        'nilai_ka_lajur2' => $d['badan_jalan']['lapis_pondasi_atas']['kanan']['lajur_2']['jenis'] ?? null,
+                        'nilai_ka_lajur3' => $d['badan_jalan']['lapis_pondasi_atas']['kanan']['lajur_3']['jenis'] ?? null,
+                        'nilai_ka_lajur4' => $d['badan_jalan']['lapis_pondasi_atas']['kanan']['lajur_4']['jenis'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'jenis_lapis_id' => 3,
+                        'uraian' => 'TEBAL',
+                        'nilai_ki_lajur1' => $d['badan_jalan']['lapis_pondasi_bawah']['kiri']['lajur_1']['tebal'] ?? null,
+                        'nilai_ki_lajur2' => $d['badan_jalan']['lapis_pondasi_bawah']['kiri']['lajur_2']['tebal'] ?? null,
+                        'nilai_ki_lajur3' => $d['badan_jalan']['lapis_pondasi_bawah']['kiri']['lajur_3']['tebal'] ?? null,
+                        'nilai_ki_lajur4' => $d['badan_jalan']['lapis_pondasi_bawah']['kiri']['lajur_4']['tebal'] ?? null,
+                        'nilai_ka_lajur1' => $d['badan_jalan']['lapis_pondasi_bawah']['kanan']['lajur_1']['tebal'] ?? null,
+                        'nilai_ka_lajur2' => $d['badan_jalan']['lapis_pondasi_bawah']['kanan']['lajur_2']['tebal'] ?? null,
+                        'nilai_ka_lajur3' => $d['badan_jalan']['lapis_pondasi_bawah']['kanan']['lajur_3']['tebal'] ?? null,
+                        'nilai_ka_lajur4' => $d['badan_jalan']['lapis_pondasi_bawah']['kanan']['lajur_4']['tebal'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'jenis_lapis_id' => 3,
+                        'uraian' => 'JENIS',
+                        'nilai_ki_lajur1' => $d['badan_jalan']['lapis_pondasi_bawah']['kiri']['lajur_1']['jenis'] ?? null,
+                        'nilai_ki_lajur2' => $d['badan_jalan']['lapis_pondasi_bawah']['kiri']['lajur_2']['jenis'] ?? null,
+                        'nilai_ki_lajur3' => $d['badan_jalan']['lapis_pondasi_bawah']['kiri']['lajur_3']['jenis'] ?? null,
+                        'nilai_ki_lajur4' => $d['badan_jalan']['lapis_pondasi_bawah']['kiri']['lajur_4']['jenis'] ?? null,
+                        'nilai_ka_lajur1' => $d['badan_jalan']['lapis_pondasi_bawah']['kanan']['lajur_1']['jenis'] ?? null,
+                        'nilai_ka_lajur2' => $d['badan_jalan']['lapis_pondasi_bawah']['kanan']['lajur_2']['jenis'] ?? null,
+                        'nilai_ka_lajur3' => $d['badan_jalan']['lapis_pondasi_bawah']['kanan']['lajur_3']['jenis'] ?? null,
+                        'nilai_ka_lajur4' => $d['badan_jalan']['lapis_pondasi_bawah']['kanan']['lajur_4']['jenis'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                ];
             dataJalanTeknik2Lapis::insert($data_jalan_teknik2_lapis);
-    
+
             $data_jalan_teknik2_median =
-            [
                 [
-                    'id_leger_jalan' => $l['id'] ?? null ,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'uraian' => 'LEBAR' ?? null,
-                    'nilai' => $d['median']['lebar'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-            ];
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'uraian' => 'LEBAR' ?? null,
+                        'nilai' => $d['median']['lebar'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                ];
             dataJalanTeknik2Median::insert($data_jalan_teknik2_median);
-    
+
             $data_jalan_teknik2_bahujalan =
-            [
                 [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'jenis_lapis_id' => 1 ?? null,
-                    'uraian' => 'TEBAL' ?? null,
-                    'nilai_ki_dalam' => $d['bahu_jalan']['lapis_permukaan']['kiri_dalam']['tebal'] ?? null,
-                    'nilai_ki_luar' => $d['bahu_jalan']['lapis_permukaan']['kiri_luar']['tebal'] ?? null,
-                    'nilai_ka_dalam' => $d['bahu_jalan']['lapis_permukaan']['kanan_dalam']['tebal'] ?? null,
-                    'nilai_ka_luar' => $d['bahu_jalan']['lapis_permukaan']['kanan_luar']['tebal'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-                [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'jenis_lapis_id' => 1 ?? null,
-                    'uraian' => 'JENIS' ?? null,
-                    'nilai_ki_dalam' => $d['bahu_jalan']['lapis_permukaan']['kiri_dalam']['jenis'] ?? null,
-                    'nilai_ki_luar' => $d['bahu_jalan']['lapis_permukaan']['kiri_luar']['jenis'] ?? null,
-                    'nilai_ka_dalam' => $d['bahu_jalan']['lapis_permukaan']['kanan_dalam']['jenis'] ?? null,
-                    'nilai_ka_luar' => $d['bahu_jalan']['lapis_permukaan']['kanan_luar']['jenis'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-                [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'jenis_lapis_id' => 2 ?? null,
-                    'uraian' => 'TEBAL' ?? null,
-                    'nilai_ki_dalam' => $d['bahu_jalan']['lapis_pondasi_atas']['kiri_dalam']['tebal'] ?? null,
-                    'nilai_ki_luar' => $d['bahu_jalan']['lapis_pondasi_atas']['kiri_luar']['tebal'] ?? null,
-                    'nilai_ka_dalam' => $d['bahu_jalan']['lapis_pondasi_atas']['kanan_dalam']['tebal'] ?? null,
-                    'nilai_ka_luar' => $d['bahu_jalan']['lapis_pondasi_atas']['kanan_luar']['tebal'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-                [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'jenis_lapis_id' => 2 ?? null,
-                    'uraian' => 'JENIS' ?? null,
-                    'nilai_ki_dalam' => $d['bahu_jalan']['lapis_pondasi_atas']['kiri_dalam']['jenis'] ?? null,
-                    'nilai_ki_luar' => $d['bahu_jalan']['lapis_pondasi_atas']['kiri_luar']['jenis'] ?? null,
-                    'nilai_ka_dalam' => $d['bahu_jalan']['lapis_pondasi_atas']['kanan_dalam']['jenis'] ?? null,
-                    'nilai_ka_luar' => $d['bahu_jalan']['lapis_pondasi_atas']['kanan_luar']['jenis'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-                [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'jenis_lapis_id' => 3 ?? null,
-                    'uraian' => 'TEBAL' ?? null,
-                    'nilai_ki_dalam' => $d['bahu_jalan']['lapis_pondasi_bawah']['kiri_dalam']['tebal'] ?? null,
-                    'nilai_ki_luar' => $d['bahu_jalan']['lapis_pondasi_bawah']['kiri_luar']['tebal'] ?? null,
-                    'nilai_ka_dalam' => $d['bahu_jalan']['lapis_pondasi_bawah']['kanan_dalam']['tebal'] ?? null,
-                    'nilai_ka_luar' => $d['bahu_jalan']['lapis_pondasi_bawah']['kanan_luar']['tebal'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-                [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'jenis_lapis_id' => 3 ?? null,
-                    'uraian' => 'JENIS' ?? null,
-                    'nilai_ki_dalam' => $d['bahu_jalan']['lapis_pondasi_bawah']['kiri_dalam']['jenis'] ?? null,
-                    'nilai_ki_luar' => $d['bahu_jalan']['lapis_pondasi_bawah']['kiri_luar']['jenis'] ?? null,
-                    'nilai_ka_dalam' => $d['bahu_jalan']['lapis_pondasi_bawah']['kanan_dalam']['jenis'] ?? null,
-                    'nilai_ka_luar' => $d['bahu_jalan']['lapis_pondasi_bawah']['kanan_luar']['jenis'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-            ];
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'jenis_lapis_id' => 1 ?? null,
+                        'uraian' => 'TEBAL' ?? null,
+                        'nilai_ki_dalam' => $d['bahu_jalan']['lapis_permukaan']['kiri_dalam']['tebal'] ?? null,
+                        'nilai_ki_luar' => $d['bahu_jalan']['lapis_permukaan']['kiri_luar']['tebal'] ?? null,
+                        'nilai_ka_dalam' => $d['bahu_jalan']['lapis_permukaan']['kanan_dalam']['tebal'] ?? null,
+                        'nilai_ka_luar' => $d['bahu_jalan']['lapis_permukaan']['kanan_luar']['tebal'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'jenis_lapis_id' => 1 ?? null,
+                        'uraian' => 'JENIS' ?? null,
+                        'nilai_ki_dalam' => $d['bahu_jalan']['lapis_permukaan']['kiri_dalam']['jenis'] ?? null,
+                        'nilai_ki_luar' => $d['bahu_jalan']['lapis_permukaan']['kiri_luar']['jenis'] ?? null,
+                        'nilai_ka_dalam' => $d['bahu_jalan']['lapis_permukaan']['kanan_dalam']['jenis'] ?? null,
+                        'nilai_ka_luar' => $d['bahu_jalan']['lapis_permukaan']['kanan_luar']['jenis'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'jenis_lapis_id' => 2 ?? null,
+                        'uraian' => 'TEBAL' ?? null,
+                        'nilai_ki_dalam' => $d['bahu_jalan']['lapis_pondasi_atas']['kiri_dalam']['tebal'] ?? null,
+                        'nilai_ki_luar' => $d['bahu_jalan']['lapis_pondasi_atas']['kiri_luar']['tebal'] ?? null,
+                        'nilai_ka_dalam' => $d['bahu_jalan']['lapis_pondasi_atas']['kanan_dalam']['tebal'] ?? null,
+                        'nilai_ka_luar' => $d['bahu_jalan']['lapis_pondasi_atas']['kanan_luar']['tebal'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'jenis_lapis_id' => 2 ?? null,
+                        'uraian' => 'JENIS' ?? null,
+                        'nilai_ki_dalam' => $d['bahu_jalan']['lapis_pondasi_atas']['kiri_dalam']['jenis'] ?? null,
+                        'nilai_ki_luar' => $d['bahu_jalan']['lapis_pondasi_atas']['kiri_luar']['jenis'] ?? null,
+                        'nilai_ka_dalam' => $d['bahu_jalan']['lapis_pondasi_atas']['kanan_dalam']['jenis'] ?? null,
+                        'nilai_ka_luar' => $d['bahu_jalan']['lapis_pondasi_atas']['kanan_luar']['jenis'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'jenis_lapis_id' => 3 ?? null,
+                        'uraian' => 'TEBAL' ?? null,
+                        'nilai_ki_dalam' => $d['bahu_jalan']['lapis_pondasi_bawah']['kiri_dalam']['tebal'] ?? null,
+                        'nilai_ki_luar' => $d['bahu_jalan']['lapis_pondasi_bawah']['kiri_luar']['tebal'] ?? null,
+                        'nilai_ka_dalam' => $d['bahu_jalan']['lapis_pondasi_bawah']['kanan_dalam']['tebal'] ?? null,
+                        'nilai_ka_luar' => $d['bahu_jalan']['lapis_pondasi_bawah']['kanan_luar']['tebal'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'jenis_lapis_id' => 3 ?? null,
+                        'uraian' => 'JENIS' ?? null,
+                        'nilai_ki_dalam' => $d['bahu_jalan']['lapis_pondasi_bawah']['kiri_dalam']['jenis'] ?? null,
+                        'nilai_ki_luar' => $d['bahu_jalan']['lapis_pondasi_bawah']['kiri_luar']['jenis'] ?? null,
+                        'nilai_ka_dalam' => $d['bahu_jalan']['lapis_pondasi_bawah']['kanan_dalam']['jenis'] ?? null,
+                        'nilai_ka_luar' => $d['bahu_jalan']['lapis_pondasi_bawah']['kanan_luar']['jenis'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                ];
             DataJalanTeknik2BahuJalan::insert($data_jalan_teknik2_bahujalan);
-    
+
             $data_jalan_teknik3_goronggorong =
-            [
                 [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'uraian' => 'JENIS MATERIAL' ?? null,
-                    'nilai_ke1' => $d['gorong_gorong'][0]['jenis_material'] ?? null,
-                    'nilai_ke2' => $d['gorong_gorong'][1]['jenis_material'] ?? null,
-                    'nilai_ke3' => $d['gorong_gorong'][2]['jenis_material'] ?? null,
-                    'nilai_ke4' => $d['gorong_gorong'][3]['jenis_material'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-                [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'uraian' => 'UKURAN PANJANG' ?? null,
-                    'nilai_ke1' => $d['gorong_gorong'][0]['ukuran_panjang'] ?? null,
-                    'nilai_ke2' => $d['gorong_gorong'][1]['ukuran_panjang'] ?? null,
-                    'nilai_ke3' => $d['gorong_gorong'][2]['ukuran_panjang'] ?? null,
-                    'nilai_ke4' => $d['gorong_gorong'][3]['ukuran_panjang'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-                [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'uraian' => 'KONDISI' ?? null,
-                    'nilai_ke1' => $d['gorong_gorong'][0]['kondisi'] ?? null,
-                    'nilai_ke2' => $d['gorong_gorong'][1]['kondisi'] ?? null,
-                    'nilai_ke3' => $d['gorong_gorong'][2]['kondisi'] ?? null,
-                    'nilai_ke4' => $d['gorong_gorong'][3]['kondisi'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-            ];
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'uraian' => 'JENIS MATERIAL' ?? null,
+                        'nilai_ke1' => $d['gorong_gorong'][0]['jenis_material'] ?? null,
+                        'nilai_ke2' => $d['gorong_gorong'][1]['jenis_material'] ?? null,
+                        'nilai_ke3' => $d['gorong_gorong'][2]['jenis_material'] ?? null,
+                        'nilai_ke4' => $d['gorong_gorong'][3]['jenis_material'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'uraian' => 'UKURAN PANJANG' ?? null,
+                        'nilai_ke1' => $d['gorong_gorong'][0]['ukuran_panjang'] ?? null,
+                        'nilai_ke2' => $d['gorong_gorong'][1]['ukuran_panjang'] ?? null,
+                        'nilai_ke3' => $d['gorong_gorong'][2]['ukuran_panjang'] ?? null,
+                        'nilai_ke4' => $d['gorong_gorong'][3]['ukuran_panjang'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'uraian' => 'KONDISI' ?? null,
+                        'nilai_ke1' => $d['gorong_gorong'][0]['kondisi'] ?? null,
+                        'nilai_ke2' => $d['gorong_gorong'][1]['kondisi'] ?? null,
+                        'nilai_ke3' => $d['gorong_gorong'][2]['kondisi'] ?? null,
+                        'nilai_ke4' => $d['gorong_gorong'][3]['kondisi'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                ];
             DataJalanTeknik3GorongGorong::insert($data_jalan_teknik3_goronggorong);
 
             $data_jalan_teknik3_saluran =
-            [
                 [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'uraian' => 'JENIS MATERIAL' ?? null,
-                    'jenis_saluran_id' => 4 ?? null,
-                    'nilai_ke1_ki' => $d['manhole']['kiri'][0]['jenis_material'] ?? null,
-                    'nilai_ke1_md' => $d['manhole']['median'][0]['jenis_material'] ?? null,
-                    'nilai_ke1_ka' => $d['manhole']['kanan'][0]['jenis_material'] ?? null,
-                    'nilai_ke2_ki' => $d['manhole']['kiri'][1]['jenis_material'] ?? null,
-                    'nilai_ke2_md' => $d['manhole']['median'][1]['jenis_material'] ?? null,
-                    'nilai_ke2_ka' => $d['manhole']['kanan'][1]['jenis_material'] ?? null,
-                    'nilai_ke3_ki' => $d['manhole']['kiri'][2]['jenis_material'] ?? null,
-                    'nilai_ke3_md' => $d['manhole']['median'][2]['jenis_material'] ?? null,
-                    'nilai_ke3_ka' => $d['manhole']['kanan'][2]['jenis_material'] ?? null,
-                    'nilai_ke4_ki' => $d['manhole']['kiri'][3]['jenis_material'] ?? null,
-                    'nilai_ke4_md' => $d['manhole']['median'][3]['jenis_material'] ?? null,
-                    'nilai_ke4_ka' => $d['manhole']['kanan'][3]['jenis_material'] ?? null,
-                    'created_at' => now() ?? null,
-                    'updated_at' => now() ?? null,
-                ],
-                [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'uraian' => 'UKURAN POKOK' ?? null,
-                    'jenis_saluran_id' => 4 ?? null,
-                    'nilai_ke1_ki' => $d['manhole']['kiri'][0]['ukuran_pokok'] ?? null,
-                    'nilai_ke1_md' => $d['manhole']['median'][0]['ukuran_pokok'] ?? null,
-                    'nilai_ke1_ka' => $d['manhole']['kanan'][0]['ukuran_pokok'] ?? null,
-                    'nilai_ke2_ki' => $d['manhole']['kiri'][1]['ukuran_pokok'] ?? null,
-                    'nilai_ke2_md' => $d['manhole']['median'][1]['ukuran_pokok'] ?? null,
-                    'nilai_ke2_ka' => $d['manhole']['kanan'][1]['ukuran_pokok'] ?? null,
-                    'nilai_ke3_ki' => $d['manhole']['kiri'][2]['ukuran_pokok'] ?? null,
-                    'nilai_ke3_md' => $d['manhole']['median'][2]['ukuran_pokok'] ?? null,
-                    'nilai_ke3_ka' => $d['manhole']['kanan'][2]['ukuran_pokok'] ?? null,
-                    'nilai_ke4_ki' => $d['manhole']['kiri'][3]['ukuran_pokok'] ?? null,
-                    'nilai_ke4_md' => $d['manhole']['median'][3]['ukuran_pokok'] ?? null,
-                    'nilai_ke4_ka' => $d['manhole']['kanan'][3]['ukuran_pokok'] ?? null,
-                    'created_at' => now() ?? null,
-                    'updated_at' => now() ?? null,
-                ],
-                [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'uraian' => 'KONDISI' ?? null,
-                    'jenis_saluran_id' => 4 ?? null,
-                    'nilai_ke1_ki' => $d['manhole']['kiri'][0]['kondisi'] ?? null,
-                    'nilai_ke1_md' => $d['manhole']['median'][0]['kondisi'] ?? null,
-                    'nilai_ke1_ka' => $d['manhole']['kanan'][0]['kondisi'] ?? null,
-                    'nilai_ke2_ki' => $d['manhole']['kiri'][1]['kondisi'] ?? null,
-                    'nilai_ke2_md' => $d['manhole']['median'][1]['kondisi'] ?? null,
-                    'nilai_ke2_ka' => $d['manhole']['kanan'][1]['kondisi'] ?? null,
-                    'nilai_ke3_ki' => $d['manhole']['kiri'][2]['kondisi'] ?? null,
-                    'nilai_ke3_md' => $d['manhole']['median'][2]['kondisi'] ?? null,
-                    'nilai_ke3_ka' => $d['manhole']['kanan'][2]['kondisi'] ?? null,
-                    'nilai_ke4_ki' => $d['manhole']['kiri'][3]['kondisi'] ?? null,
-                    'nilai_ke4_md' => $d['manhole']['median'][3]['kondisi'] ?? null,
-                    'nilai_ke4_ka' => $d['manhole']['kanan'][3]['kondisi'] ?? null,
-                    'created_at' => now() ?? null,
-                    'updated_at' => now() ?? null,
-                ],
-            ];
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'uraian' => 'JENIS MATERIAL' ?? null,
+                        'jenis_saluran_id' => 4 ?? null,
+                        'nilai_ke1_ki' => $d['manhole']['kiri'][0]['jenis_material'] ?? null,
+                        'nilai_ke1_md' => $d['manhole']['median'][0]['jenis_material'] ?? null,
+                        'nilai_ke1_ka' => $d['manhole']['kanan'][0]['jenis_material'] ?? null,
+                        'nilai_ke2_ki' => $d['manhole']['kiri'][1]['jenis_material'] ?? null,
+                        'nilai_ke2_md' => $d['manhole']['median'][1]['jenis_material'] ?? null,
+                        'nilai_ke2_ka' => $d['manhole']['kanan'][1]['jenis_material'] ?? null,
+                        'nilai_ke3_ki' => $d['manhole']['kiri'][2]['jenis_material'] ?? null,
+                        'nilai_ke3_md' => $d['manhole']['median'][2]['jenis_material'] ?? null,
+                        'nilai_ke3_ka' => $d['manhole']['kanan'][2]['jenis_material'] ?? null,
+                        'nilai_ke4_ki' => $d['manhole']['kiri'][3]['jenis_material'] ?? null,
+                        'nilai_ke4_md' => $d['manhole']['median'][3]['jenis_material'] ?? null,
+                        'nilai_ke4_ka' => $d['manhole']['kanan'][3]['jenis_material'] ?? null,
+                        'created_at' => now() ?? null,
+                        'updated_at' => now() ?? null,
+                    ],
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'uraian' => 'UKURAN POKOK' ?? null,
+                        'jenis_saluran_id' => 4 ?? null,
+                        'nilai_ke1_ki' => $d['manhole']['kiri'][0]['ukuran_pokok'] ?? null,
+                        'nilai_ke1_md' => $d['manhole']['median'][0]['ukuran_pokok'] ?? null,
+                        'nilai_ke1_ka' => $d['manhole']['kanan'][0]['ukuran_pokok'] ?? null,
+                        'nilai_ke2_ki' => $d['manhole']['kiri'][1]['ukuran_pokok'] ?? null,
+                        'nilai_ke2_md' => $d['manhole']['median'][1]['ukuran_pokok'] ?? null,
+                        'nilai_ke2_ka' => $d['manhole']['kanan'][1]['ukuran_pokok'] ?? null,
+                        'nilai_ke3_ki' => $d['manhole']['kiri'][2]['ukuran_pokok'] ?? null,
+                        'nilai_ke3_md' => $d['manhole']['median'][2]['ukuran_pokok'] ?? null,
+                        'nilai_ke3_ka' => $d['manhole']['kanan'][2]['ukuran_pokok'] ?? null,
+                        'nilai_ke4_ki' => $d['manhole']['kiri'][3]['ukuran_pokok'] ?? null,
+                        'nilai_ke4_md' => $d['manhole']['median'][3]['ukuran_pokok'] ?? null,
+                        'nilai_ke4_ka' => $d['manhole']['kanan'][3]['ukuran_pokok'] ?? null,
+                        'created_at' => now() ?? null,
+                        'updated_at' => now() ?? null,
+                    ],
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'uraian' => 'KONDISI' ?? null,
+                        'jenis_saluran_id' => 4 ?? null,
+                        'nilai_ke1_ki' => $d['manhole']['kiri'][0]['kondisi'] ?? null,
+                        'nilai_ke1_md' => $d['manhole']['median'][0]['kondisi'] ?? null,
+                        'nilai_ke1_ka' => $d['manhole']['kanan'][0]['kondisi'] ?? null,
+                        'nilai_ke2_ki' => $d['manhole']['kiri'][1]['kondisi'] ?? null,
+                        'nilai_ke2_md' => $d['manhole']['median'][1]['kondisi'] ?? null,
+                        'nilai_ke2_ka' => $d['manhole']['kanan'][1]['kondisi'] ?? null,
+                        'nilai_ke3_ki' => $d['manhole']['kiri'][2]['kondisi'] ?? null,
+                        'nilai_ke3_md' => $d['manhole']['median'][2]['kondisi'] ?? null,
+                        'nilai_ke3_ka' => $d['manhole']['kanan'][2]['kondisi'] ?? null,
+                        'nilai_ke4_ki' => $d['manhole']['kiri'][3]['kondisi'] ?? null,
+                        'nilai_ke4_md' => $d['manhole']['median'][3]['kondisi'] ?? null,
+                        'nilai_ke4_ka' => $d['manhole']['kanan'][3]['kondisi'] ?? null,
+                        'created_at' => now() ?? null,
+                        'updated_at' => now() ?? null,
+                    ],
+                ];
             DataJalanTeknik3Saluran::insert($data_jalan_teknik3_saluran);
-            
+
             // $data_jalan_teknik3_bangunan =
             // [
             //     [
@@ -3503,238 +3507,238 @@ class LegerController extends Controller
             // ];
 
             $data_jalan_teknik4 =
-            [
-                //PAGAR OPERASIONAL
                 [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'uraian' => 'PAGAR OPERASIONAL' ?? null,
-                    'nilai_ki' => $d['patok_km_count']['kiri']['count'] ?? null,
-                    'nilai_md' => $d['patok_km_count']['median']['count'] ?? null,
-                    'nilai_ka' => $d['patok_km_count']['kanan']['count'] ?? null,
-                    'created_at' => now() ?? null,
-                    'updated_at' => now() ?? null,
-                ],
+                    //PAGAR OPERASIONAL
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'uraian' => 'PAGAR OPERASIONAL' ?? null,
+                        'nilai_ki' => $d['patok_km_count']['kiri']['count'] ?? null,
+                        'nilai_md' => $d['patok_km_count']['median']['count'] ?? null,
+                        'nilai_ka' => $d['patok_km_count']['kanan']['count'] ?? null,
+                        'created_at' => now() ?? null,
+                        'updated_at' => now() ?? null,
+                    ],
 
-                //PATOK KM
-                [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'uraian' => 'PATOK KM' ?? null,
-                    'nilai_ki' => $d['patok_km_count']['kiri'] ?? null,
-                    'nilai_md' => $d['patok_km_count']['median'] ?? null,
-                    'nilai_ka' => $d['patok_km_count']['kanan'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-                //PATOK HM
-                [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'uraian' => 'PATOK HM' ?? null,
-                    'nilai_ki' => $d['patok_hm_count']['kiri'] ?? null,
-                    'nilai_md' => $d['patok_hm_count']['median'] ?? null,
-                    'nilai_ka' => $d['patok_hm_count']['kanan'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-                //PATOK LJ
-                [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'uraian' => 'PATOK LJ' ?? null,
-                    'nilai_ki' => $d['patok_lj_count']['kiri'] ?? null,
-                    'nilai_md' => $d['patok_lj_count']['median'] ?? null,
-                    'nilai_ka' => $d['patok_lj_count']['kanan'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-                //PATOK RMJ
-                [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'uraian' => 'PATOK RMJ' ?? null,
-                    'nilai_ki' => $d['patok_rmj_count']['kiri'] ?? null,
-                    'nilai_md' => $d['patok_rmj_count']['median'] ?? null,
-                    'nilai_ka' => $d['patok_rmj_count']['kanan'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-            ];
+                    //PATOK KM
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'uraian' => 'PATOK KM' ?? null,
+                        'nilai_ki' => $d['patok_km_count']['kiri'] ?? null,
+                        'nilai_md' => $d['patok_km_count']['median'] ?? null,
+                        'nilai_ka' => $d['patok_km_count']['kanan'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                    //PATOK HM
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'uraian' => 'PATOK HM' ?? null,
+                        'nilai_ki' => $d['patok_hm_count']['kiri'] ?? null,
+                        'nilai_md' => $d['patok_hm_count']['median'] ?? null,
+                        'nilai_ka' => $d['patok_hm_count']['kanan'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                    //PATOK LJ
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'uraian' => 'PATOK LJ' ?? null,
+                        'nilai_ki' => $d['patok_lj_count']['kiri'] ?? null,
+                        'nilai_md' => $d['patok_lj_count']['median'] ?? null,
+                        'nilai_ka' => $d['patok_lj_count']['kanan'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                    //PATOK RMJ
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'uraian' => 'PATOK RMJ' ?? null,
+                        'nilai_ki' => $d['patok_rmj_count']['kiri'] ?? null,
+                        'nilai_md' => $d['patok_rmj_count']['median'] ?? null,
+                        'nilai_ka' => $d['patok_rmj_count']['kanan'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                ];
             dataJalanTeknik4::insert($data_jalan_teknik4);
 
 
             $data_jalan_teknik5_utilitas =
-            [
                 [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'uraian' => 'JARINGAN LISTRIK DIBAWAH TANAH' ?? null,
-                    'nilai_ki' => $d['listrik_bawah_tanah']['kiri']['count'] ?? null,
-                    'nilai_md' => $d['listrik_bawah_tanah']['median']['count'] ?? null,
-                    'nilai_ka' => $d['listrik_bawah_tanah']['kanan']['count'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-                [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'uraian' => 'JARINGAN TELEKOMUNIKASI DIBAWAH TANAH' ?? null,
-                    'nilai_ki' => $d['telepon_bawah_tanah']['kiri']['count'] ?? null,
-                    'nilai_md' => $d['telepon_bawah_tanah']['median']['count'] ?? null,
-                    'nilai_ka' => $d['telepon_bawah_tanah']['kanan']['count'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-            ];
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'uraian' => 'JARINGAN LISTRIK DIBAWAH TANAH' ?? null,
+                        'nilai_ki' => $d['listrik_bawah_tanah']['kiri']['count'] ?? null,
+                        'nilai_md' => $d['listrik_bawah_tanah']['median']['count'] ?? null,
+                        'nilai_ka' => $d['listrik_bawah_tanah']['kanan']['count'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'uraian' => 'JARINGAN TELEKOMUNIKASI DIBAWAH TANAH' ?? null,
+                        'nilai_ki' => $d['telepon_bawah_tanah']['kiri']['count'] ?? null,
+                        'nilai_md' => $d['telepon_bawah_tanah']['median']['count'] ?? null,
+                        'nilai_ka' => $d['telepon_bawah_tanah']['kanan']['count'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                ];
             DataJalanTeknik5Utilitas::insert($data_jalan_teknik5_utilitas);
 
             $data_jalan_lhr =
-            [
                 [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'uraian' => 'GOLONGAN I' ?? null,
-                    'lhr_ki' => $d['lhr_sum']['golongan_i']['kiri'] ?? null,
-                    'lhr_ka' => $d['lhr_sum']['golongan_i']['kanan'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-                [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'uraian' => 'GOLONGAN II' ?? null,
-                    'lhr_ki' => $d['lhr_sum']['golongan_ii']['kiri'] ?? null,
-                    'lhr_ka' => $d['lhr_sum']['golongan_ii']['kanan'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-                [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'uraian' => 'GOLONGAN III' ?? null,
-                    'lhr_ki' => $d['lhr_sum']['golongan_iii']['kiri'] ?? null,
-                    'lhr_ka' => $d['lhr_sum']['golongan_iii']['kanan'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-                [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'uraian' => 'GOLONGAN IV' ?? null,
-                    'lhr_ki' => $d['lhr_sum']['golongan_iv']['kiri'] ?? null,
-                    'lhr_ka' => $d['lhr_sum']['golongan_iv']['kanan'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-                [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'uraian' => 'GOLONGAN V' ?? null,
-                    'lhr_ki' => $d['lhr_sum']['golongan_v']['kiri'] ?? null,
-                    'lhr_ka' => $d['lhr_sum']['golongan_v']['kanan'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-            ];
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'uraian' => 'GOLONGAN I' ?? null,
+                        'lhr_ki' => $d['lhr_sum']['golongan_i']['kiri'] ?? null,
+                        'lhr_ka' => $d['lhr_sum']['golongan_i']['kanan'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'uraian' => 'GOLONGAN II' ?? null,
+                        'lhr_ki' => $d['lhr_sum']['golongan_ii']['kiri'] ?? null,
+                        'lhr_ka' => $d['lhr_sum']['golongan_ii']['kanan'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'uraian' => 'GOLONGAN III' ?? null,
+                        'lhr_ki' => $d['lhr_sum']['golongan_iii']['kiri'] ?? null,
+                        'lhr_ka' => $d['lhr_sum']['golongan_iii']['kanan'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'uraian' => 'GOLONGAN IV' ?? null,
+                        'lhr_ki' => $d['lhr_sum']['golongan_iv']['kiri'] ?? null,
+                        'lhr_ka' => $d['lhr_sum']['golongan_iv']['kanan'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'uraian' => 'GOLONGAN V' ?? null,
+                        'lhr_ki' => $d['lhr_sum']['golongan_v']['kiri'] ?? null,
+                        'lhr_ka' => $d['lhr_sum']['golongan_v']['kanan'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                ];
             DataJalanLHR::insert($data_jalan_lhr);
 
             $data_geometrik_jalan =
-            [
                 [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'uraian' => 'LEBAR RUMIJA' ?? null,
-                    'nilai' => $d['data_geometrik_jalan']['lebar_rmj'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-                [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'uraian' => 'KELANDAIAN KIRI' ?? null,
-                    'nilai' => $d['data_geometrik_jalan']['gradien_kiri'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-                [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'uraian' => 'KELANDAIAN KANAN' ?? null,
-                    'nilai' => $d['data_geometrik_jalan']['gradien_kanan'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-                [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'uraian' => 'CROSSFALL KIRI' ?? null,
-                    'nilai' => $d['data_geometrik_jalan']['crossfall_kiri'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-                [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'uraian' => 'CROSSFALL KANAN' ?? null,
-                    'nilai' => $d['data_geometrik_jalan']['crossfall_kanan'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-                [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'uraian' => 'SUPERELEVASI' ?? null,
-                    'nilai' => $d['data_geometrik_jalan']['super_elevasi'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-                [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,
-                    'uraian' => 'RADIUS' ?? null,
-                    'nilai' => $d['data_geometrik_jalan']['radius'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-            ];
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'uraian' => 'LEBAR RUMIJA' ?? null,
+                        'nilai' => $d['data_geometrik_jalan']['lebar_rmj'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'uraian' => 'KELANDAIAN KIRI' ?? null,
+                        'nilai' => $d['data_geometrik_jalan']['gradien_kiri'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'uraian' => 'KELANDAIAN KANAN' ?? null,
+                        'nilai' => $d['data_geometrik_jalan']['gradien_kanan'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'uraian' => 'CROSSFALL KIRI' ?? null,
+                        'nilai' => $d['data_geometrik_jalan']['crossfall_kiri'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'uraian' => 'CROSSFALL KANAN' ?? null,
+                        'nilai' => $d['data_geometrik_jalan']['crossfall_kanan'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'uraian' => 'SUPERELEVASI' ?? null,
+                        'nilai' => $d['data_geometrik_jalan']['super_elevasi'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'uraian' => 'RADIUS' ?? null,
+                        'nilai' => $d['data_geometrik_jalan']['radius'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                ];
             DataJalanGeometrik::insert($data_geometrik_jalan);
 
             $data_situasi_jalan =
-            [
                 [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,                    
-                    'uraian' => 'TERRAIN KIRI' ?? null,
-                    'nilai' => $d['data_geometrik_jalan']['terrain_kiri'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-                [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,                    
-                    'uraian' => 'TERRAIN KANAN' ?? null,
-                    'nilai' => $d['data_geometrik_jalan']['terrain_kanan'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-                [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,                    
-                    'uraian' => 'TATAGUNA LAHAN KIRI' ?? null,
-                    'nilai' => $d['data_geometrik_jalan']['tataguna_lahan_kiri'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-                [
-                    'id_leger_jalan' => $l['id'] ?? null,
-                    'tahun' => $tol['tahun'] ?? null,                    
-                    'uraian' => 'TATAGUNA LAHAN KANAN' ?? null,
-                    'nilai' => $d['data_geometrik_jalan']['tataguna_lahan_kanan'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-            ];
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'uraian' => 'TERRAIN KIRI' ?? null,
+                        'nilai' => $d['data_geometrik_jalan']['terrain_kiri'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'uraian' => 'TERRAIN KANAN' ?? null,
+                        'nilai' => $d['data_geometrik_jalan']['terrain_kanan'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'uraian' => 'TATAGUNA LAHAN KIRI' ?? null,
+                        'nilai' => $d['data_geometrik_jalan']['tataguna_lahan_kiri'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                    [
+                        'id_leger_jalan' => $l['id'] ?? null,
+                        'tahun' => $tol['tahun'] ?? null,
+                        'uraian' => 'TATAGUNA LAHAN KANAN' ?? null,
+                        'nilai' => $d['data_geometrik_jalan']['tataguna_lahan_kanan'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ],
+                ];
             DataJalanSituasi::insert($data_situasi_jalan);
         };
 

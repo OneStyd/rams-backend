@@ -67,7 +67,7 @@ class InputController extends Controller
         $request->validate([
             'nama' => 'required',
             'kode' => 'required',
-            'tahun' => 'required',
+            'tahun' => 'required|integer|min:0',
         ]);
 
         if (Auth::user()->role_id == 1) {
@@ -81,7 +81,7 @@ class InputController extends Controller
             abort(403);
         }
     }
-    
+
     public function inputAset(Request $request)
     {
         $request->validate([
@@ -154,8 +154,8 @@ class InputController extends Controller
             abort(403);
         }
     }
-    
-    public function uploadAdministratifPolygon(Request $request) 
+
+    public function uploadAdministratifPolygon(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -167,26 +167,26 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_administratif_polygon (
-                        jalan_tol_id, 
-                        geom, 
-                        txtmemo, 
-                        kode_prov, 
-                        nama_prov, 
-                        kode_kab, 
-                        nama_kab, 
-                        kode_kec, 
-                        nama_kec, 
-                        kode_desa, 
-                        nama_desa, 
-                        tahun, 
-                        created_at, 
+                        jalan_tol_id,
+                        geom,
+                        txtmemo,
+                        kode_prov,
+                        nama_prov,
+                        kode_kab,
+                        nama_kab,
+                        kode_kec,
+                        nama_kec,
+                        kode_desa,
+                        nama_desa,
+                        tahun,
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["txtmemo"]."',
                         '".$object["properties"]["kode_prov"]."',
                         '".$object["properties"]["nama_prov"]."',
@@ -210,7 +210,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadBatasDesaLine(Request $request) 
+    public function uploadBatasDesaLine(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -222,17 +222,17 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_batas_desa_line (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         layer,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["layer"]."',
                         '".now()."',
                         '".now()."'
@@ -247,7 +247,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadBoxCulvertLine(Request $request) 
+    public function uploadBoxCulvertLine(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -259,20 +259,20 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_box_culvert_line (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         layer,
                         jenis_material,
                         ukuran_panjang,
                         kondisi,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["layer"]."',
                         '".$object["properties"]["jns_mtrial"]."',
                         '".$object["properties"]["ukrn_pnjng"]."',
@@ -290,7 +290,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadBPTLine(Request $request) 
+    public function uploadBPTLine(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -302,20 +302,20 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_bpt_line (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         layer,
                         jenis_material,
                         ukuran_pokok,
                         kondisi,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["layer"]."',
                         '".$object["properties"]["jns_mtrial"]."',
                         '".$object["properties"]["ukrn_pokok"]."',
@@ -333,7 +333,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadBronjongLine(Request $request) 
+    public function uploadBronjongLine(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -345,17 +345,17 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_bronjong_line (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         layer,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["layer"]."',
                         '".now()."',
                         '".now()."'
@@ -370,7 +370,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadConcreteBarrierLine(Request $request) 
+    public function uploadConcreteBarrierLine(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -382,17 +382,17 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_concrete_barrier_line (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         layer,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["layer"]."',
                         '".now()."',
                         '".now()."'
@@ -407,7 +407,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadDataGeometrikJalanPolygon(Request $request) 
+    public function uploadDataGeometrikJalanPolygon(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -419,10 +419,10 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_data_geometrik_jalan_polygon (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         id_leger,
                         segmen_tol,
                         nama,
@@ -437,12 +437,12 @@ class InputController extends Controller
                         terrain_kanan,
                         tataguna_lahan_kiri,
                         tataguna_lahan_kanan,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["id_leger"]."',
                         '".$object["properties"]["sgmn_tol"]."',
                         '".$object["properties"]["nama"]."',
@@ -470,7 +470,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadGerbangLine(Request $request) 
+    public function uploadGerbangLine(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -482,17 +482,17 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_gerbang_line (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         layer,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["layer"]."',
                         '".now()."',
                         '".now()."'
@@ -507,7 +507,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadGerbangPoint(Request $request) 
+    public function uploadGerbangPoint(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -519,17 +519,17 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_gerbang_point (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         layer,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["layer"]."',
                         '".now()."',
                         '".now()."'
@@ -544,7 +544,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadGorongGorongLine(Request $request) 
+    public function uploadGorongGorongLine(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -556,21 +556,21 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_gorong_gorong_line (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         layer,
                         jenis_material,
                         ukuran_panjang,
                         kondisi,
                         diameter,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["layer"]."',
                         '".$object["properties"]["jns_mtrial"]."',
                         '".$object["properties"]["ukrn_pnjng"]."',
@@ -589,7 +589,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadGuardrailLine(Request $request) 
+    public function uploadGuardrailLine(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -601,17 +601,17 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_guardrail_line (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         layer,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["layer"]."',
                         '".now()."',
                         '".now()."'
@@ -626,7 +626,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadIRIPolygon(Request $request) 
+    public function uploadIRIPolygon(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -638,22 +638,22 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_iri_polygon (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         jalur,
                         bagian_jalan,
                         lebar,
                         segmen_tol,
                         km,
                         nilai_iri,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["jalur"]."',
                         '".$object["properties"]["bagian_jln"]."',
                         '".$object["properties"]["lebar"]."',
@@ -673,7 +673,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadJalanLine(Request $request) 
+    public function uploadJalanLine(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -685,17 +685,17 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_jalan_line (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         layer,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["layer"]."',
                         '".now()."',
                         '".now()."'
@@ -710,7 +710,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadJembatanPoint(Request $request) 
+    public function uploadJembatanPoint(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -722,10 +722,10 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_jembatan_point (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         nama,
                         km,
                         panjang,
@@ -733,12 +733,12 @@ class InputController extends Controller
                         luas,
                         absis_x,
                         ordinat_y,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["nama"]."',
                         '".$object["properties"]["km"]."',
                         '".$object["properties"]["panjang"]."',
@@ -759,7 +759,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadJembatanPolygon(Request $request) 
+    public function uploadJembatanPolygon(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -771,21 +771,21 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_jembatan_polygon (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         nama,
                         km,
                         panjang,
                         lebar,
                         luas,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["nama"]."',
                         '".$object["properties"]["km"]."',
                         '".$object["properties"]["panjang"]."',
@@ -804,7 +804,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadLampuLalulintasPoint(Request $request) 
+    public function uploadLampuLalulintasPoint(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -816,18 +816,18 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_lampu_lalulintas_point (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         absis_x,
                         ordinat_y,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["absis_x"]."',
                         '".$object["properties"]["ordinat_y"]."',
                         '".now()."',
@@ -843,7 +843,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadLapisPermukaanPolygon(Request $request) 
+    public function uploadLapisPermukaanPolygon(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -855,18 +855,18 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_lapis_permukaan_polygon (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         tebal,
                         jenis,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["tebal"]."',
                         '".$object["properties"]["jenis"]."',
                         '".now()."',
@@ -882,7 +882,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadLapisPondasiAtas1Polygon(Request $request) 
+    public function uploadLapisPondasiAtas1Polygon(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -894,18 +894,18 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_lapis_pondasi_atas1_polygon (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         tebal,
                         jenis,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["tebal"]."',
                         '".$object["properties"]["jenis"]."',
                         '".now()."',
@@ -921,7 +921,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadLapisPondasiAtas2Polygon(Request $request) 
+    public function uploadLapisPondasiAtas2Polygon(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -933,18 +933,18 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_lapis_pondasi_atas2_polygon (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         tebal,
                         jenis,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["tebal"]."',
                         '".$object["properties"]["jenis"]."',
                         '".now()."',
@@ -960,7 +960,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadLapisPondasiBawahPolygon(Request $request) 
+    public function uploadLapisPondasiBawahPolygon(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -972,18 +972,18 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_lapis_pondasi_bawah_polygon (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         tebal,
                         jenis,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["tebal"]."',
                         '".$object["properties"]["jenis"]."',
                         '".now()."',
@@ -999,7 +999,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadLHRPolygon(Request $request) 
+    public function uploadLHRPolygon(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -1011,10 +1011,10 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_lhr_polygon (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         segmen_tol,
                         nama_segmen,
                         gol_i,
@@ -1022,12 +1022,12 @@ class InputController extends Controller
                         gol_iii,
                         gol_iv,
                         gol_v,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["sgm_tol"]."',
                         '".$object["properties"]["nama_sgmn"]."',
                         '".$object["properties"]["gol_i"]."',
@@ -1048,7 +1048,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadListrikBawahtanahLine(Request $request) 
+    public function uploadListrikBawahtanahLine(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -1060,17 +1060,17 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_listrik_bawahtanah_line (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         layer,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["layer"]."',
                         '".now()."',
                         '".now()."'
@@ -1085,7 +1085,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadManholePoint(Request $request) 
+    public function uploadManholePoint(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -1097,20 +1097,20 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_manhole_point (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         layer,
                         jenis_material,
                         ukuran_pokok,
                         kondisi,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["layer"]."',
                         '".$object["properties"]["jns_mtrial"]."',
                         '".$object["properties"]["ukrn_pokok"]."',
@@ -1128,7 +1128,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadMarkaLine(Request $request) 
+    public function uploadMarkaLine(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -1140,17 +1140,17 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_marka_line (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         layer,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["layer"]."',
                         '".now()."',
                         '".now()."'
@@ -1165,7 +1165,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadPagarOperasionalLine(Request $request) 
+    public function uploadPagarOperasionalLine(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -1177,18 +1177,18 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_pagar_operasional_line (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         layer,
                         jenis,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["layer"]."',
                         '".$object["properties"]["jenis"]."',
                         '".now()."',
@@ -1204,7 +1204,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadPatokHMPoint(Request $request) 
+    public function uploadPatokHMPoint(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -1216,18 +1216,18 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_patok_hm_point (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         layer,
                         km,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["layer"]."',
                         '".$object["properties"]["km"]."',
                         '".now()."',
@@ -1243,7 +1243,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadPatokKMPoint(Request $request) 
+    public function uploadPatokKMPoint(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -1255,18 +1255,18 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_patok_km_point (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         layer,
                         km,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["layer"]."',
                         '".$object["properties"]["km"]."',
                         '".now()."',
@@ -1282,7 +1282,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadPatokLJPoint(Request $request) 
+    public function uploadPatokLJPoint(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -1294,19 +1294,19 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_patok_lj_point (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         layer,
                         keterangan,
                         deskripsi,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["layer"]."',
                         '".$object["properties"]["keterangan"]."',
                         '".$object["properties"]["deskripsi"]."',
@@ -1323,7 +1323,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadPatokPemanduPoint(Request $request) 
+    public function uploadPatokPemanduPoint(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -1335,17 +1335,17 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_patok_pemandu_point (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         layer,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["layer"]."',
                         '".now()."',
                         '".now()."'
@@ -1360,7 +1360,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadPatokRMJPoint(Request $request) 
+    public function uploadPatokRMJPoint(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -1372,17 +1372,17 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_patok_rmj_point (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         layer,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["layer"]."',
                         '".now()."',
                         '".now()."'
@@ -1397,7 +1397,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadPatokROWPoint(Request $request) 
+    public function uploadPatokROWPoint(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -1409,17 +1409,17 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_patok_row_point (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         layer,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["layer"]."',
                         '".now()."',
                         '".now()."'
@@ -1434,7 +1434,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadPitaKejutLine(Request $request) 
+    public function uploadPitaKejutLine(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -1446,17 +1446,17 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_pita_kejut_line (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         layer,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["layer"]."',
                         '".now()."',
                         '".now()."'
@@ -1471,7 +1471,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadRambuLalulintasPoint(Request $request) 
+    public function uploadRambuLalulintasPoint(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -1483,17 +1483,17 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_rambu_lalulintas_point (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         layer,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["layer"]."',
                         '".now()."',
                         '".now()."'
@@ -1508,7 +1508,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadRambuPenunjukarahPoint(Request $request) 
+    public function uploadRambuPenunjukarahPoint(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -1520,17 +1520,17 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_rambu_penunjukarah_point (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         layer,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["layer"]."',
                         '".now()."',
                         '".now()."'
@@ -1545,7 +1545,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadReflektorPoint(Request $request) 
+    public function uploadReflektorPoint(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -1557,17 +1557,17 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_reflektor_point (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         layer,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["layer"]."',
                         '".now()."',
                         '".now()."'
@@ -1582,7 +1582,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadRiolLine(Request $request) 
+    public function uploadRiolLine(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -1594,20 +1594,20 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_riol_line (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         layer,
                         jenis_material,
                         ukuran_pokok,
                         kondisi,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["layer"]."',
                         '".$object["properties"]["jns_mtrial"]."',
                         '".$object["properties"]["ukrn_pokok"]."',
@@ -1625,7 +1625,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadRumahKabelPoint(Request $request) 
+    public function uploadRumahKabelPoint(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -1637,17 +1637,17 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_rumah_kabel_point (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         layer,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["layer"]."',
                         '".now()."',
                         '".now()."'
@@ -1662,7 +1662,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadRuwasjaPoint(Request $request) 
+    public function uploadRuwasjaPoint(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -1674,17 +1674,17 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_ruwasja_polygon (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         keterangan,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["keterangan"]."',
                         '".now()."',
                         '".now()."'
@@ -1699,7 +1699,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadSaluranLine(Request $request) 
+    public function uploadSaluranLine(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -1711,10 +1711,10 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_saluran_line (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         layer,
                         jenis_material,
                         kondisi,
@@ -1725,8 +1725,8 @@ class InputController extends Controller
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["layer"]."',
                         '".$object["properties"]["jns_mtrial"]."',
                         '".$object["properties"]["kondisi"]."',
@@ -1746,7 +1746,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadSegmenKonstruksiPolygon(Request $request) 
+    public function uploadSegmenKonstruksiPolygon(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -1758,18 +1758,18 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_segmen_konstruksi_polygon (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         bagian_jalan,
                         lebar,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["bagian_jln"]."',
                         '".$object["properties"]["lebar"]."',
                         '".now()."',
@@ -1785,7 +1785,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadSegmenLegerPolygon(Request $request) 
+    public function uploadSegmenLegerPolygon(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -1798,25 +1798,25 @@ class InputController extends Controller
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
                 $kode_leger = $object["properties"]["id_leger"];
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_segmen_leger_polygon (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         id_leger,
                         km,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$kode_leger."',
                         '".$object["properties"]["km"]."',
                         '".now()."',
                         '".now()."'
                     )
                 ");
-                
+
                 $initial_leger = substr($kode_leger, 0, 1);
                 switch ($initial_leger) {
                     case 'M':
@@ -1851,7 +1851,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadSegmenPerlengkapanPolygon(Request $request) 
+    public function uploadSegmenPerlengkapanPolygon(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -1863,17 +1863,17 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_segmen_perlengkapan_polygon (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         jalur,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["jalur"]."',
                         '".now()."',
                         '".now()."'
@@ -1888,7 +1888,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadSegmenSeksiPolygon(Request $request) 
+    public function uploadSegmenSeksiPolygon(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -1900,10 +1900,10 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_segmen_seksi_polygon (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         no_ruas,
                         nama_ruas,
                         seksi,
@@ -1920,12 +1920,12 @@ class InputController extends Controller
                         z_akhir,
                         deskripsi_awal,
                         deskripsi_akhir,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["no_ruas"]."',
                         '".$object["properties"]["nama_ruas"]."',
                         '".$object["properties"]["seksi"]."',
@@ -1955,7 +1955,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadSegmenTolPolygon(Request $request) 
+    public function uploadSegmenTolPolygon(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -1967,18 +1967,18 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_segmen_tol_polygon (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         segmen_tol,
                         nama_segmen,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["sgm_tol"]."',
                         '".$object["properties"]["nama_sgmn"]."',
                         '".now()."',
@@ -1994,7 +1994,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadStaTextPoint(Request $request) 
+    public function uploadStaTextPoint(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -2006,17 +2006,17 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_sta_text_point (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         sta,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["sta"]."',
                         '".now()."',
                         '".now()."'
@@ -2031,7 +2031,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadSungaiLine(Request $request) 
+    public function uploadSungaiLine(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -2043,17 +2043,17 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_sungai_line (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         layer,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["layer"]."',
                         '".now()."',
                         '".now()."'
@@ -2068,7 +2068,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadTeleponBawahtanahLine(Request $request) 
+    public function uploadTeleponBawahtanahLine(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -2080,17 +2080,17 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_telepon_bawahtanah_line (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         layer,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["layer"]."',
                         '".now()."',
                         '".now()."'
@@ -2105,7 +2105,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadTiangListrikPoint(Request $request) 
+    public function uploadTiangListrikPoint(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -2117,17 +2117,17 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_tiang_listrik_point (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         layer,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["layer"]."',
                         '".now()."',
                         '".now()."'
@@ -2142,7 +2142,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadTiangTeleponPoint(Request $request) 
+    public function uploadTiangTeleponPoint(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -2154,17 +2154,17 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_tiang_telepon_point (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         layer,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["layer"]."',
                         '".now()."',
                         '".now()."'
@@ -2179,7 +2179,7 @@ class InputController extends Controller
         }
     }
 
-    public function uploadVMSPoint(Request $request) 
+    public function uploadVMSPoint(Request $request)
     {
         if ($request->geojson) {
             $file = $request->file('geojson');
@@ -2191,17 +2191,17 @@ class InputController extends Controller
             $geojson = file_get_contents(public_path('temp/'.$filename));
             $objects = json_decode($geojson, true);
             foreach ($objects['features'] as $object)  {
-                DB::statement("INSERT 
+                DB::statement("INSERT
                     INTO spatial_vms_point (
-                        jalan_tol_id, 
-                        geom, 
+                        jalan_tol_id,
+                        geom,
                         layer,
-                        created_at, 
+                        created_at,
                         updated_at
                     )
                     VALUES (
-                        ".$jalan_tol_id.", 
-                        ST_GeomFromGeoJSON('".json_encode($object["geometry"])."'), 
+                        " . $jalan_tol_id . ",
+                        ST_GeomFromGeoJSON('" . json_encode($object["geometry"]) . "'),
                         '".$object["properties"]["layer"]."',
                         '".now()."',
                         '".now()."'

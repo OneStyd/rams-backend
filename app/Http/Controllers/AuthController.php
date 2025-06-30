@@ -11,13 +11,15 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
-    public function login(Request $request) 
+    public function login(Request $request)
     {
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
-        $user = User::where('email', $request->email)->first();
+
+        $email = trim($request->email);
+        $user = User::where('email', $email)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
