@@ -27,4 +27,10 @@ class DataPatok extends Model
         'tanggal_pengukuran',
         'keterangan',
     ];
+
+    // Relasi ke leger_patok (bisa punya banyak leger_patok)
+    public function legerPatoks()
+    {
+        return $this->hasMany(LegerPatok::class, 'data_patok_id');
+    }
 }

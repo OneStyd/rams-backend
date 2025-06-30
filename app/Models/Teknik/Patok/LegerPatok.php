@@ -14,13 +14,15 @@ class LegerPatok extends Model
         'data_patok_id',
     ];
 
+    // Relasi ke tabel leger
     public function leger()
     {
-        return $this->hasOne(\App\Models\Leger::class, 'id', 'leger_id');
+        return $this->belongsTo(\App\Models\Leger::class, 'leger_id', 'id');
     }
 
+    // Relasi ke data patok
     public function dataPatok()
     {
-        return $this->belongsTo(DataPatok::class, 'data_patok_id');
+        return $this->belongsTo(DataPatok::class, 'data_patok_id', 'id');
     }
 }

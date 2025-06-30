@@ -9,6 +9,7 @@ use App\Http\Controllers\InputController;
 use App\Http\Controllers\OutputController;
 use App\Http\Controllers\LegerController;
 use App\Http\Controllers\RefferenceController;
+use App\Http\Controllers\SpatialPatokKmPointController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,6 +55,18 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('leger/populate/{jalan_tol_id}', [LegerController::class,'populateLegerJalan']);
     Route::get('leger/jalan-utama-map', [LegerController::class,'getLegerImage']);
     Route::get('leger/jalan-utama-all-test/{jalan_tol_id}', [LegerController::class, 'getDataJalanUtamaAll']);
+
+    // Leger Patok CP
+    Route::get('leger-patok/cp/{leger_id}', [LegerPatokCPController::class, 'index']);
+    Route::post('leger-patok/cp', [LegerPatokCPController::class, 'store']);
+
+    // Leger Patok LJ
+    Route::get('leger-patok/lj/{leger_id}', [LegerPatokLJController::class, 'index']);
+    Route::post('leger-patok/lj', [LegerPatokLJController::class, 'store']);
+
+    // Leger Patok RMJ
+    Route::get('leger-patok/rmj/{leger_id}', [LegerPatokRMJController::class, 'index']);
+    Route::post('leger-patok/rmj', [LegerPatokRMJController::class, 'store']);
 });
 
 Route::get('/get-km-options', [FilterController::class, 'getKMOptions']);
@@ -65,3 +78,5 @@ Route::get('data/aset/{type}', [OutputController::class, 'getAset']);
 Route::get('data/segmen/{awal}/{akhir}', [OutputController::class, 'getSegmenLegerPolygonSelection']);
 
 Route::post('/login', [AuthController::class, 'login']);
+
+Route::get('/patok/km', [SpatialPatokKmPointController::class, 'index']);
