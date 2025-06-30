@@ -14,5 +14,11 @@ class DataKantorLuasLahan extends Model
         'data_perolehan',
         'nilai_perolehan',
         'bukti_perolehan',
+        'id_leger_kantor',
     ];
+
+    public function legerKantor()
+    {
+        return $this->belongsTo(\App\Models\Teknik\Kantor\LegerKantor::class, 'id_leger_kantor');
+    }
 }

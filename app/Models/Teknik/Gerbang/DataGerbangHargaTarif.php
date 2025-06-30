@@ -17,5 +17,11 @@ class DataGerbangHargaTarif extends Model
         'gol_4',
         'gol_5',
         'gol_6',
+        'id_leger_gerbang',
     ];
+
+    public function legerGerbang()
+    {
+        return $this->belongsTo(\App\Models\Teknik\Gerbang\LegerGerbang::class, 'id_leger_gerbang');
+    }
 }

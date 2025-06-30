@@ -14,5 +14,11 @@ class DataGerbangLuasLahan extends Model
         'data_perolehan',
         'nilai_perolehan',
         'bukti_perolehan',
+        'id_leger_gerbang',
     ];
+
+    public function legerGerbang()
+    {
+        return $this->belongsTo(\App\Models\Teknik\Gerbang\LegerGerbang::class, 'id_leger_gerbang');
+    }
 }

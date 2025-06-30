@@ -26,6 +26,7 @@ class DataGerbangIdentifikasi extends Model
         'tanggal_selesai_bangun',
         'tanggal_dibuka',
         'tanggal_ditutup',
+        'id_leger_gerbang',
     ];
 
     public function kodeProvinsi()
@@ -46,5 +47,10 @@ class DataGerbangIdentifikasi extends Model
     public function kodeDesakel()
     {
         return $this->belongsTo(\App\Models\Teknik\KodeDesakel::class, 'kode_desakel_id');
+    }
+
+    public function legerGerbang()
+    {
+        return $this->belongsTo(\App\Models\Teknik\Gerbang\LegerGerbang::class, 'id_leger_gerbang');
     }
 }

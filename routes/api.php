@@ -8,6 +8,8 @@ use App\Http\Controllers\FilterController;
 use App\Http\Controllers\InputController;
 use App\Http\Controllers\OutputController;
 use App\Http\Controllers\LegerController;
+use App\Http\Controllers\LegerGerbangController;
+use App\Http\Controllers\LegerKantorController;
 use App\Http\Controllers\RefferenceController;
 
 /*
@@ -54,6 +56,27 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('leger/populate/{jalan_tol_id}', [LegerController::class,'populateLegerJalan']);
     Route::get('leger/jalan-utama-map', [LegerController::class,'getLegerImage']);
     Route::get('leger/jalan-utama-all-test/{jalan_tol_id}', [LegerController::class, 'getDataJalanUtamaAll']);
+
+    // Leger Gerbang dan Kantor
+    Route::post('leger/gerbang/generate', [LegerGerbangController::class, 'generate']);
+    Route::get('leger/gerbang/ruas', [LegerGerbangController::class, 'getRuas']);
+    Route::get('leger/gerbang/segmen/{jalan_tol_id}', [LegerGerbangController::class, 'getSegmen']);
+    Route::get('leger/gerbang/get-data/{kode_leger}', [LegerGerbangController::class, 'getDataLegerGerbang']);
+    Route::get('leger/gerbang/{jalan_tol_id}/{leger_id_awal}/{leger_id_akhir}', [LegerGerbangController::class, 'getDataGerbang']);
+    Route::get('leger/gerbang-all/{jalan_tol_id}', [LegerGerbangController::class, 'getAllDataGerbang']);
+    Route::get('leger/gerbang/populate/{jalan_tol_id}', [LegerGerbangController::class,'populateLegerGerbang']);
+    Route::get('leger/gerbang-all-test/{jalan_tol_id}', [LegerGerbangController::class, 'getDataGerbangAll']);
+
+    Route::post('leger/kantor/generate', [LegerKantorController::class, 'generate']);
+    Route::get('leger/kantor/ruas', [LegerKantorController::class, 'getRuas']);
+    Route::get('leger/kantor/segmen/{jalan_tol_id}', [LegerKantorController::class, 'getSegmen']);
+    Route::get('leger/kantor/get-data/{kode_leger}', [LegerKantorController::class, 'getDataLegerKantor']);
+    Route::get('leger/kantor/{jalan_tol_id}/{leger_id_awal}/{leger_id_akhir}', [LegerKantorController::class, 'getDataKantor']);
+    Route::get('leger/kantor-all/{jalan_tol_id}', [LegerKantorController::class, 'getAllDataKantor']);
+    Route::get('leger/kantor/populate/{jalan_tol_id}', [LegerKantorController::class,'populateLegerKantor']);
+    Route::get('leger/kantor-all-test/{jalan_tol_id}', [LegerKantorController::class, 'getDataKantorAll']);
+
+
 });
 
 Route::get('/get-km-options', [FilterController::class, 'getKMOptions']);

@@ -15,5 +15,11 @@ class DataGerbangTeknik1 extends Model
         'luas_lahan',
         'luas_bangunan',
         'kondisi',
+        'id_leger_gerbang',
     ];
+
+    public function legerGerbang()
+    {
+        return $this->belongsTo(\App\Models\Teknik\Gerbang\LegerGerbang::class, 'id_leger_gerbang');
+    }
 }

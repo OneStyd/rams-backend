@@ -15,5 +15,11 @@ class DataKantorTeknik1 extends Model
         'luas_lahan',
         'luas_bangunan',
         'kondisi',
+        'id_leger_kantor',
     ];
+
+    public function legerKantor()
+    {
+        return $this->belongsTo(\App\Models\Teknik\Kantor\LegerKantor::class, 'id_leger_kantor');
+    }
 }

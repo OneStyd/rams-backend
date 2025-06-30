@@ -24,6 +24,9 @@ class DataKantorIdentifikasi extends Model
         'titik_ikat_leger_z',
         'titik_ikat_leger_deskripsi',
         'tanggal_selesai_bangun',
+        'tanggal_dibuka',
+        'tanggal_ditutup',
+        'id_leger_kantor',
     ];
 
     public function kodeProvinsi()
@@ -44,5 +47,10 @@ class DataKantorIdentifikasi extends Model
     public function kodeDesakel()
     {
         return $this->belongsTo(\App\Models\Teknik\KodeDesakel::class, 'kode_desakel_id');
+    }
+
+    public function legerKantor()
+    {
+        return $this->belongsTo(\App\Models\Teknik\Kantor\LegerKantor::class, 'id_leger_kantor');
     }
 }

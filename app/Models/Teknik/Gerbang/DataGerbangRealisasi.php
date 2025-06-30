@@ -15,5 +15,11 @@ class DataGerbangRealisasi extends Model
         'cacah',
         'biaya',
         'sumber_dana',
+        'id_leger_gerbang',
     ];
+
+    public function legerGerbang()
+    {
+        return $this->belongsTo(\App\Models\Teknik\Gerbang\LegerGerbang::class, 'id_leger_gerbang');
+    }
 }
