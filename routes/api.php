@@ -54,6 +54,16 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('leger/populate/{jalan_tol_id}', [LegerController::class,'populateLegerJalan']);
     Route::get('leger/jalan-utama-map', [LegerController::class,'getLegerImage']);
     Route::get('leger/jalan-utama-all-test/{jalan_tol_id}', [LegerController::class, 'getDataJalanUtamaAll']);
+    
+    // Leger Jembatan
+    Route::post('leger/jembatan/generate', [LegerJembatanController::class, 'generate']);
+    Route::get('leger/jembatan/ruas', [LegerJembatanController::class, 'getRuas']);
+    Route::get('leger/jembatan/segmen/{jalan_tol_id}', [LegerJembatanController::class, 'getSegmen']);
+    Route::get('leger/jembatan/get-data/{kode_leger}', [LegerJembatanController::class, 'getDataLegerJembatan']);
+    Route::get('leger/jembatan/{jalan_tol_id}/{leger_id_awal}/{leger_id_akhir}', [LegerJembatanController::class, 'getDataJembatan']);
+    Route::get('leger/jembatan-all/{jalan_tol_id}', [LegerJembatanController::class, 'getAllDataJembatan']);
+    Route::get('leger/jembatan/populate/{jalan_tol_id}', [LegerJembatanController::class,'populateLegerJembatan']);
+    Route::get('leger/jembatan-all-test/{jalan_tol_id}', [LegerJembatanController::class, 'getDataJembatanAll']);
 });
 
 Route::get('/get-km-options', [FilterController::class, 'getKMOptions']);
